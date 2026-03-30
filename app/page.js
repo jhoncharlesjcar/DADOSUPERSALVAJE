@@ -1,7 +1,5 @@
+import PanelPrincipal from "./_components/PanelPrincipal";
+
 export default function Home() {
-  return (
-    <main>
-      <div>Hello world!</div>
-    </main>
-  );
+  return <PanelPrincipal />;
 }
