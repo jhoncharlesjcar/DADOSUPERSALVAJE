@@ -1,34 +1,187 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎲 DATOS SUPER SALVAJE
 
-## Getting Started
+**Aplicación web interactiva** basada en Next.js para gestión y visualización de datos gamificados.
 
-First, run the development server:
+---
+
+## 📋 Descripción
+
+DATOS SUPER SALVAJE es una plataforma Next.js diseñada para crear experiencias interactivas alrededor de datos y estadísticas. Combina visualización moderna de datos con una interfaz atractiva y responsiva.
+
+### Características Principales
+
+- ✅ **Dashboard Interactivo** - Visualización de datos en tiempo real
+- 📊 **Gráficos Dinámicos** - Recharts y visualizaciones avanzadas
+- 🎮 **Gamificación** - Elementos de juego y puntos
+- 📱 **Responsive Design** - Funciona en todos los dispositivos
+- 🎨 **UI/UX Moderna** - Diseño premium con Tailwind CSS
+- ⚡ **Rendimiento Optimizado** - Carga rápida y fluidez
+
+---
+
+## 🛠️ Stack Tecnológico
+
+### Frontend
+- **Next.js 14+** - Framework React
+- **React 18** - Librería UI
+- **TypeScript** - Tipado estático
+- **Tailwind CSS** - Estilos utilitarios
+- **Recharts** - Gráficos interactivos
+- **Lucide Icons** - Iconografía
+
+### Backend
+- **Next.js API Routes** - Backend sin servidor
+- **API REST** - Endpoints personalizados
+
+---
+
+## 🚀 Inicio Rápido
+
+### Prerequisitos
+
+- Node.js 18+
+- npm o yarn
+- Git
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/jhoncharlesjcar/DADOSUPERSALVAJE.git
+cd DADOSUPERSALVAJE
+```
+
+### 2. Instalar dependencias
+
+```bash
+npm install
+# o
+yarn install
+```
+
+### 3. Configurar variables de entorno
+
+Crear archivo `.env.local`:
+
+```env
+# API Base URL
+NEXT_PUBLIC_API_URL=http://localhost:3000
+
+# Acceso a datos (si aplica)
+API_SECRET_KEY=tu_clave_secreta
+```
+
+⚠️ **IMPORTANTE:** Nunca commitear archivos `.env` o credenciales sensibles.
+
+### 4. Ejecutar en desarrollo
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Accede a `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-## Learn More
+## 📂 Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+```
+DATOSSUPERSALVAJE/
+├── app/
+│   ├── layout.tsx             # Layout principal
+│   ├── page.tsx               # Página de inicio
+│   ├── dashboard/             # Módulo dashboard
+│   ├── games/                 # Módulo juegos
+│   ├── api/                   # API Routes
+│   └── globals.css
+│
+├── components/
+│   ├── ui/                    # Componentes base
+│   ├── dashboard/             # Componentes dashboard
+│   ├── layout/                # Componentes layout
+│   └── GameCard.tsx
+│
+├── lib/
+│   ├── utils.ts               # Utilidades
+│   ├── api.ts                 # Cliente API
+│   ├── types.ts               # Tipos TypeScript
+│   └── ...
+│
+├── public/
+│   ├── images/
+│   └── icons/
+│
+├── .env.example               # Variables de ejemplo
+├── next.config.mjs
+├── tailwind.config.ts
+└── package.json
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🎯 Funcionalidades Principales
 
-## Deploy on Vercel
+### Dashboard
+- Tarjetas de estadísticas
+- Gráficos de tendencias
+- Indicadores KPI
+- Últimas actividades
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Módulo de Juegos
+- Mini-juegos interactivos
+- Sistema de puntos y logros
+- Leaderboard
+- Desafíos diarios
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Visualización de Datos
+- Gráficos interactivos
+- Filtros dinámicos
+- Comparativas temporales
+
+---
+
+## 📊 Scripts Disponibles
+
+```bash
+npm run dev          # Desarrollo
+npm run build        # Build producción
+npm run start        # Iniciar servidor
+npm run lint         # Linter
+```
+
+---
+
+## 🚀 Despliegue
+
+### Vercel
+
+```bash
+npm install -g vercel
+vercel
+```
+
+### Docker
+
+```bash
+docker build -t datos-super-salvaje .
+docker run -p 3000:3000 datos-super-salvaje
+```
+
+---
+
+## 🔒 Seguridad
+
+- ✅ Nunca exponer credenciales en código
+- ✅ Usar `.env.local` para variables sensibles
+- ✅ Validación de entrada en APIs
+- ✅ Headers de seguridad HTTP
+- ✅ CORS configurado
+
+---
+
+## 📄 Licencia
+
+Propietario - © Jcar Labs. Todos los derechos reservados.
+
+---
+
+**Desarrollado con ❤️ por Jcar Labs**
