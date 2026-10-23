@@ -1,0 +1,13 @@
+{
+  "name": "Pantera Rosada",
+  "reference": "/mascots/pantera.webp",
+  "vertices": 13496,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

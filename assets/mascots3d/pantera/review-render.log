@@ -1,0 +1,153 @@
+Blender 4.5.9 LTS (hash 8bf95cbd38d1 built 2026-04-21 01:33:45)
+Read blend: "C:\Users\Usuario\Desktop\SENATI\Proyectos\DADOSUPERSALVAJE\assets\mascots3d\pantera\revision2\model.blend"
+Fra:1 Mem:29.89M (Peak 29.89M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Mascot_Mesh
+Fra:1 Mem:29.89M (Peak 29.89M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Recorte
+Fra:1 Mem:29.89M (Peak 29.89M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Neón borde
+Fra:1 Mem:42.92M (Peak 45.83M) | Time:00:00.04 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:37.43M (Peak 45.83M) | Time:00:00.04 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_color
+Fra:1 Mem:37.43M (Peak 45.83M) | Time:00:00.04 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_normal
+Fra:1 Mem:67.80M (Peak 101.45M) | Time:00:00.15 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:67.80M (Peak 101.45M) | Time:00:00.15 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:67.80M (Peak 101.45M) | Time:00:00.15 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:67.80M (Peak 101.45M) | Time:00:00.15 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.15 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.15 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.15 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:67.89M (Peak 101.45M) | Time:00:00.16 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:75.17M (Peak 101.45M) | Time:00:00.25 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:75.17M (Peak 101.45M) | Time:00:00.25 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.25 | Mem:32.02M, Peak:32.02M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.25 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.25 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.26 | Mem:45.46M, Peak:45.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.27 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:84.73M (Peak 101.45M) | Time:00:00.27 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:88.30M (Peak 101.45M) | Time:00:00.27 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.46M, Peak:59.54M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.36 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Sample 0/32
+Fra:1 Mem:165.90M (Peak 165.90M) | Time:00:01.32 | Remaining:00:29.82 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Sample 1/32
+Fra:1 Mem:196.12M (Peak 241.44M) | Time:00:39.20 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Sample 32/32
+Fra:1 Mem:196.12M (Peak 241.44M) | Time:00:39.20 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Finished
+Saved: 'C:\Users\Usuario\Desktop\SENATI\Proyectos\DADOSUPERSALVAJE\assets\mascots3d\pantera\revision2\preview.png'
+Time: 00:39.48 (Saving: 00:00.27)
+
+Fra:32 Mem:31.68M (Peak 31.68M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Mascot_Mesh
+Fra:32 Mem:31.68M (Peak 31.68M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Relleno
+Fra:32 Mem:31.70M (Peak 31.70M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Neón borde
+Fra:32 Mem:42.95M (Peak 45.86M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:32 Mem:37.46M (Peak 45.86M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_color
+Fra:32 Mem:37.46M (Peak 45.86M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_normal
+Fra:32 Mem:67.82M (Peak 85.49M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Waiting for render to start
+Fra:32 Mem:67.82M (Peak 85.49M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Scene
+Fra:32 Mem:67.82M (Peak 85.49M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Shaders
+Fra:32 Mem:67.82M (Peak 85.49M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Procedurals
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Background
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Camera
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:32 Mem:67.91M (Peak 85.49M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes
+Fra:32 Mem:75.19M (Peak 85.49M) | Time:00:00.17 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:32 Mem:75.19M (Peak 85.49M) | Time:00:00.17 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.18 | Mem:32.02M, Peak:32.02M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.18 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.18 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.18 | Mem:45.46M, Peak:45.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.19 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:32 Mem:84.74M (Peak 85.49M) | Time:00:00.19 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Objects Flags
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Images
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Camera Volume
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights
+Fra:32 Mem:88.32M (Peak 88.32M) | Time:00:00.20 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Integrator
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Film
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.46M, Peak:59.54M | Scene, ViewLayer | Updating Lookup Tables
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Baking
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:32 Mem:94.10M (Peak 109.63M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Sample 0/32
+Fra:32 Mem:165.92M (Peak 165.92M) | Time:00:01.33 | Remaining:00:32.25 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Sample 1/32
+Fra:32 Mem:196.13M (Peak 241.45M) | Time:00:41.44 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Sample 32/32
+Fra:32 Mem:196.13M (Peak 241.45M) | Time:00:41.44 | Mem:131.31M, Peak:131.31M | Scene, ViewLayer | Finished
+Saved: 'C:\Users\Usuario\Desktop\SENATI\Proyectos\DADOSUPERSALVAJE\assets\mascots3d\pantera\revision2\celebrate.png'
+Time: 00:41.58 (Saving: 00:00.13)
+
+Fra:1 Mem:31.65M (Peak 32.43M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Mascot_Mesh
+Fra:1 Mem:31.65M (Peak 32.43M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Cylinder
+Fra:1 Mem:33.12M (Peak 33.12M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Recorte
+Fra:1 Mem:33.13M (Peak 33.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Neón borde
+Fra:1 Mem:33.13M (Peak 33.13M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Relleno
+Fra:1 Mem:33.14M (Peak 33.14M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Softbox
+Fra:1 Mem:33.14M (Peak 33.14M) | Time:00:00.00 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Synchronizing object | Plane
+Fra:1 Mem:42.92M (Peak 45.83M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Initializing
+Fra:1 Mem:37.43M (Peak 45.83M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_color
+Fra:1 Mem:37.43M (Peak 45.83M) | Time:00:00.01 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images | Loading pantera_v2_normal
+Fra:1 Mem:67.80M (Peak 85.45M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Waiting for render to start
+Fra:1 Mem:67.80M (Peak 85.45M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Scene
+Fra:1 Mem:67.80M (Peak 85.45M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Updating Shaders
+Fra:1 Mem:67.80M (Peak 85.45M) | Time:00:00.09 | Mem:32.00M, Peak:32.00M | Scene, ViewLayer | Loading render kernels (may take a few minutes the first time)
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Procedurals
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Background
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Camera
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes Flags
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Copying Transformations to device
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Particle Systems | Copying Particles to device
+Fra:1 Mem:67.89M (Peak 85.45M) | Time:00:00.09 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Meshes
+Fra:1 Mem:75.17M (Peak 85.45M) | Time:00:00.18 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Objects | Applying Static Transformations
+Fra:1 Mem:75.17M (Peak 85.45M) | Time:00:00.18 | Mem:32.01M, Peak:32.01M | Scene, ViewLayer | Updating Mesh | Computing attributes
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.18 | Mem:32.02M, Peak:32.02M | Scene, ViewLayer | Updating Mesh | Copying Attributes to device
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.18 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.18 | Mem:41.57M, Peak:41.57M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.18 | Mem:45.46M, Peak:45.46M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.20 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+Fra:1 Mem:84.73M (Peak 85.45M) | Time:00:00.20 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Computing normals
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:50.11M, Peak:54.00M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Objects Flags
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Primitive Offsets
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Images
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Camera Volume
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.68M, Peak:54.00M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights
+Fra:1 Mem:88.30M (Peak 88.30M) | Time:00:00.20 | Mem:53.76M, Peak:54.00M | Scene, ViewLayer | Updating Lights | Computing tree
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Integrator
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Film
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.46M, Peak:59.54M | Scene, ViewLayer | Updating Lookup Tables
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Baking
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Updating Device | Writing constant memory
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Loading denoising kernels (may take a few minutes the first time)
+Fra:1 Mem:94.08M (Peak 109.61M) | Time:00:00.29 | Mem:59.54M, Peak:59.54M | Scene, ViewLayer | Sample 0/32
+Fra:1 Mem:152.85M (Peak 152.85M) | Time:00:00.97 | Remaining:00:21.12 | Mem:118.26M, Peak:118.26M | Scene, ViewLayer | Sample 1/32
+Fra:1 Mem:177.58M (Peak 214.66M) | Time:00:29.34 | Mem:118.26M, Peak:118.26M | Scene, ViewLayer | Sample 32/32
+Fra:1 Mem:177.58M (Peak 214.66M) | Time:00:29.34 | Mem:118.26M, Peak:118.26M | Scene, ViewLayer | Finished
+Saved: 'C:\Users\Usuario\Desktop\SENATI\Proyectos\DADOSUPERSALVAJE\assets\mascots3d\pantera\revision2\detail.png'
+Time: 00:29.48 (Saving: 00:00.13)
+
+PANTERA_REVIEW_RENDERED
+
+Blender quit

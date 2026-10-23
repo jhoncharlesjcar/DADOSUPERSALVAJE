@@ -1,0 +1,13 @@
+{
+  "name": "El Rey Salvaje",
+  "reference": "/mascots/rey_salvaje.webp",
+  "vertices": 14218,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

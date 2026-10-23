@@ -1,0 +1,13 @@
+{
+  "name": "Pato Salvaje",
+  "reference": "/mascots/pato.webp",
+  "vertices": 13882,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

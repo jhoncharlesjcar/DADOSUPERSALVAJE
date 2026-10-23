@@ -1,0 +1,13 @@
+{
+  "name": "Bestia de Fuego",
+  "reference": "/mascots/bestia_fuego.webp",
+  "vertices": 13228,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

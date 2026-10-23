@@ -1,0 +1,19 @@
+{
+  "name": "Pantera Rosada",
+  "revision": 2,
+  "reference": "/mascots/pantera.webp",
+  "vertices": 71044,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "reference study for review"
+}

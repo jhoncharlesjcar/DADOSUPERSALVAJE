@@ -1,0 +1,15 @@
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar button {
+  min-height: 44px; padding: 10px 16px; border: 1px solid #39434e;
+  border-radius: 9px; background: #1a222d; color: #d3dce6; font: inherit;
+  font-size: 14px; cursor: pointer; transition: background .15s;
+}
+.toolbar button[aria-pressed="true"] { background: #bc8c57; border-color: #bc8c57; color: #14191f; }
+.toolbar button:hover { background: #34404d; color: #fff; }
+.toolbar button:focus-visible { outline: 2px solid #ffe0b6; outline-offset: 3px; }
+.toolbar button:disabled { opacity: .45; cursor: wait; }
+.comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.reference { margin: 0; min-width: 0; }
+.reference img { display: block; width: 100%; height: auto; border-radius: 20px; }
+.reference figcaption, .caption { margin: 0 0 12px; color: #bac4d0; font-size: 14px; }
+@media (max-width: 700px) { .comparison { grid-template-columns: 1fr; } }

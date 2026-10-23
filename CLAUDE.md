@@ -1,1 +1,1 @@
-@AGENTS.md
+<!-- OBSOLETO: Consulte README.md y DOCUMENTACION_TECNICA.md -->

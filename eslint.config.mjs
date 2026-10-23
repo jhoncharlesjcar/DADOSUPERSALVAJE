@@ -11,6 +11,14 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  // Game components use <img> for animated dice/mascots/effects with dynamic
+  // CSS transforms, drop-shadows, and unknown dimensions that next/image can't handle.
+  {
+    files: ["app/_components/**/*.tsx"],
+    rules: {
+      "@next/next/no-img-element": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
