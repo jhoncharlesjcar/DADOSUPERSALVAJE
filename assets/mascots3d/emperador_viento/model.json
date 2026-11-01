@@ -1,7 +1,8 @@
 {
   "name": "Emperador del Viento",
+  "revision": 2,
   "reference": "/mascots/emperador_viento.webp",
-  "vertices": 12866,
+  "vertices": 70151,
   "bones": 18,
   "clips": [
     "Idle",
@@ -9,5 +10,10 @@
     "Throw",
     "Hit",
     "Knockout"
-  ]
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
 }

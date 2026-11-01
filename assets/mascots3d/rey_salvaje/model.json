@@ -1,7 +1,8 @@
 {
   "name": "El Rey Salvaje",
+  "revision": 2,
   "reference": "/mascots/rey_salvaje.webp",
-  "vertices": 14218,
+  "vertices": 81807,
   "bones": 18,
   "clips": [
     "Idle",
@@ -9,5 +10,10 @@
     "Throw",
     "Hit",
     "Knockout"
-  ]
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
 }

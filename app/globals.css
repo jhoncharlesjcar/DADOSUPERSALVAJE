@@ -197,7 +197,8 @@ body {
 
 /* ========= MAIN GRID ========= */
 .main-content { position: relative; z-index: 1; padding: 20px 24px; max-width: 1600px; margin: 0 auto; }
-.main-content-3col { display: grid; grid-template-columns: 330px 1fr 270px; gap: 20px; }
+.main-content-3col { display: grid; grid-template-columns: 330px minmax(0, 1fr) 270px; gap: 20px; }
+.main-content-3col > * { min-width: 0; }
 .search-section {
   display: flex;
   flex-direction: column;
@@ -212,8 +213,8 @@ body {
 .search-section > * {
   flex-shrink: 0 !important;
 }
-@media (max-width: 1280px) { .main-content-3col { grid-template-columns: 1fr 1fr; } .ranking-panel { grid-column: span 2; } }
-@media (max-width: 768px) { .main-content-3col { grid-template-columns: 1fr; } .ranking-panel { grid-column: span 1; } .header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; } .header-stats { width: 100%; justify-content: space-around; } .search-section { max-height: none; overflow-y: visible; } }
+@media (max-width: 1280px) { .main-content-3col { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ranking-section { grid-column: 1 / -1; } }
+@media (max-width: 768px) { .main-content-3col { grid-template-columns: minmax(0, 1fr); } .header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; } .header-stats { width: 100%; justify-content: space-around; } .search-section { max-height: none; overflow-y: visible; } }
 
 /* ========= CARDS ELITE 4.0 ========= */
 .card {
@@ -499,13 +500,15 @@ body {
 .dr-done-text { font-size: 13px; color: var(--white-dim); }
 
 /* ========= LEVEL UP ========= */
-.levelup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2000; background: rgba(0, 0, 0, 0.85); display: flex; align-items: center; justify-content: center; animation: fadeInUp 0.3s ease; cursor: pointer; backdrop-filter: blur(8px); }
-.levelup-modal { background: linear-gradient(135deg, var(--black-card), var(--black-elevated)); border: 2px solid rgba(212, 175, 55, 0.3); border-radius: 24px; padding: 40px 48px; text-align: center; max-width: 420px; width: 90%; animation: levelUpBounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), levelUpGlow 2s ease-in-out infinite; cursor: default; }
-.levelup-emoji { font-size: 72px; animation: emojiFloat 2s ease-in-out infinite; margin-bottom: 12px; filter: drop-shadow(0 0 20px var(--gold-glow)); }
-.levelup-title { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 4px; color: var(--white-dim); margin-bottom: 6px; }
-.levelup-level { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 900; color: var(--gold); letter-spacing: 3px; margin-bottom: 14px; animation: goldPulse 2s ease-in-out infinite; }
+.levelup-modal { position: fixed; inset: 0; margin: auto; background: linear-gradient(135deg, var(--black-card), var(--black-elevated)); color: var(--white-soft); border: 3px solid var(--gold); box-shadow: 0 0 100px var(--gold-glow-strong); border-radius: 24px; padding: clamp(20px, 5vw, 40px) clamp(16px, 5vw, 48px); text-align: center; width: min(420px, calc(100% - 24px)); max-width: none; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); overflow-y: auto; overscroll-behavior: contain; overflow-wrap: anywhere; animation: levelUpGlow 2s ease-in-out infinite; }
+.levelup-modal::backdrop { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); }
+.levelup-emoji { font-size: clamp(48px, 12vh, 100px); animation: emojiFloat 2s ease-in-out infinite; margin-bottom: 12px; filter: drop-shadow(0 0 20px var(--gold-glow)); }
+.levelup-title { font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: clamp(1px, 1vw, 4px); color: var(--white-dim); margin-bottom: 6px; }
+.levelup-level { font-family: 'Playfair Display', serif; font-size: clamp(26px, 7vw, 48px); font-weight: 900; color: var(--gold); letter-spacing: 2px; margin: 16px 0; animation: goldPulse 2s ease-in-out infinite; }
 .levelup-reward { padding: 10px 20px; background: rgba(0, 214, 143, 0.08); border: 1px solid rgba(0, 214, 143, 0.2); border-radius: 10px; font-size: 16px; font-weight: 600; color: var(--green-success); margin-bottom: 12px; }
-.levelup-points { font-size: 14px; color: var(--white-muted); font-weight: 500; }
+.levelup-points { font-size: 16px; color: var(--gold-light); font-weight: 500; }
+.levelup-continue { margin-top: 24px; white-space: normal; min-height: 44px; background: var(--gold-gradient); }
+.levelup-continue:focus-visible { outline: 3px solid white; outline-offset: 4px; }
 
 /* ==============================================================
    DICE CUP & TABLE ANIMATION SYSTEM
@@ -1773,6 +1776,16 @@ body {
 .results-container-premium img { max-height: min(52vh, 520px) !important; }
 .results-container-premium .results-table th { font-size: .72rem !important; }
 .results-container-premium .results-table td { font-size: .86rem; }
+.results-container-premium .results-table td:not(:first-child) { overflow-wrap: anywhere; }
+.results-container-premium .results-table td { color: #e5e7eb; }
+.results-container-premium .results-table .winner-row td { color: var(--gold-light); border-top: 1px solid rgba(212,175,55,.45); border-bottom: 1px solid rgba(212,175,55,.45); }
+
+.mode-selector { padding: clamp(24px, 5vw, 56px) 16px; }
+.mode-selector-options { display: grid; grid-template-columns: minmax(0, 340px); gap: 24px; width: 100%; justify-content: center; position: relative; z-index: 1; }
+.mode-selector-options .btn { white-space: normal; overflow-wrap: anywhere; }
+@media (min-width: 760px) {
+  .mode-selector-options { grid-template-columns: repeat(2, minmax(0, 340px)); gap: 40px; }
+}
 
 @media (max-width: 720px) {
   .results-container-premium .card-body { padding: 18px 14px; }

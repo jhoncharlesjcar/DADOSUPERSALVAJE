@@ -16,7 +16,7 @@ type PlayerProfile = {
 };
 
 type MatchStatus = "inactivo" | "uniendo" | "buscando" | "encontrada" | "cancelando" | "error";
-type HistoryMatch = { id: number; mode: string; stake: number; winnerName: string; prize: number; won: boolean; playedAt: string };
+type HistoryMatch = { id: string; mode: string; stake: number; winnerName: string; prize: number; won: boolean; playedAt: string };
 
 export default function LobbyOnline() {
   const router = useRouter();
@@ -33,6 +33,8 @@ export default function LobbyOnline() {
   const [matchError, setMatchError] = useState("");
   const [walletRefreshKey, setWalletRefreshKey] = useState(0);
   const [history, setHistory] = useState<HistoryMatch[]>([]);
+  const [maximumRange, setMaximumRange] = useState(false);
+  const [continueWaiting, setContinueWaiting] = useState(false);
 
   const loadSession = useCallback(async () => {
     try {
@@ -60,6 +62,7 @@ export default function LobbyOnline() {
     const response = await fetch("/api/matchmaking/status", { cache: "no-store", signal });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "No se pudo consultar la cola");
+    setMaximumRange(data.atMaximumRange === true);
     if (data.status === "encontrada") {
       setMatchStatus("encontrada");
       router.push(`/play/${data.salaId}`);
@@ -125,6 +128,7 @@ export default function LobbyOnline() {
 
   async function joinQueue(modo: "duelo" | "batalla", monto: number) {
     setMatchStatus("uniendo");
+    setContinueWaiting(false);
     setMatchError("");
     try {
       const response = await fetch("/api/matchmaking/join", {
@@ -276,7 +280,9 @@ export default function LobbyOnline() {
                   <p className="eyebrow">MATCHMAKING</p>
                   <h3>{matchStatus === "cancelando" ? "Cancelando búsqueda…" : matchStatus === "uniendo" ? "Entrando a la cola…" : "Buscando rival compatible…"}</h3>
                   <p>Mantén esta pantalla abierta. Recuperaremos tu partida si pierdes conexión.</p>
+                  {maximumRange && !continueWaiting && <p>Alcanzaste el rango máximo de búsqueda. Puedes seguir esperando o cancelar.</p>}
                 </div>
+                {maximumRange && !continueWaiting && <button className="btn btn-secondary" onClick={()=>setContinueWaiting(true)}>Seguir esperando</button>}
                 <button className="btn btn-ghost" onClick={cancelQueue} disabled={matchStatus !== "buscando"}>Cancelar</button>
               </section>
             )}

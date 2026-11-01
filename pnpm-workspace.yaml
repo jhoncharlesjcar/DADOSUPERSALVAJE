@@ -1,3 +1,5 @@
 allowBuilds:
   better-sqlite3: false
   unrs-resolver: false
+overrides:
+  eslint-plugin-react-hooks: 7.0.1

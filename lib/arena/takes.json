@@ -1,0 +1,41 @@
+{
+  "2": [
+    "calibration-2-0",
+    "calibration-2-2",
+    "calibration-2-4"
+  ],
+  "3": [
+    "calibration-3-2",
+    "calibration-3-5:take"
+  ],
+  "4": [
+    "calibration-4-0:take:take:take",
+    "calibration-4-5"
+  ],
+  "5": [
+    "calibration-5-7:take:take:take:take",
+    "calibration-5-8:take:take"
+  ],
+  "6": [
+    "calibration-6-5:take",
+    "calibration-6-12:take",
+    "calibration-6-48"
+  ],
+  "7": [
+    "calibration-7-56:take:take:take"
+  ],
+  "8": [
+    "calibration-8-10:take:take:take:take:take:take",
+    "calibration-8-17",
+    "calibration-8-62"
+  ],
+  "9": [
+    "calibration-9-68:take:take",
+    "calibration-9-108"
+  ],
+  "10": [
+    "calibration-10-57:take:take:take:take",
+    "calibration-10-252:take:take:take",
+    "calibration-10-331:take:take:take:take:take:take"
+  ]
+}

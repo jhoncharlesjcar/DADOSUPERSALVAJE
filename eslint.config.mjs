@@ -10,6 +10,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    ".tools/**", // Downloaded runtimes and generated local verification artifacts.
   ]),
   // Game components use <img> for animated dice/mascots/effects with dynamic
   // CSS transforms, drop-shadows, and unknown dimensions that next/image can't handle.

@@ -21,7 +21,7 @@ describe("resolución autoritativa",()=>{
   });
 });
 describe("contactos de dados y caras",()=>{
-  for(const count of [2,10]) {
+  for(const count of [2,3,4,5,6,7,8,9,10]) {
     it(`asienta ${count} dados dentro de la mesa con sus caras confirmadas`,()=>{
       for(let seed=0;seed<12;seed++) {
         const round={rolls:players.slice(0,count).map((p,i)=>({playerId:p.id,value:(i+seed)%6+1})),leaders:["p0"]};
@@ -32,7 +32,7 @@ describe("contactos de dados y caras",()=>{
         expect(flight.frameStep * (flight.frames.length - 1)).toBeCloseTo(flight.duration);
         expect(flight.diceContacts).toBeGreaterThan(0);
         expect(flight.impacts.every(impact => impact.time >= 0 && impact.time <= flight.duration)).toBe(true);
-        let lastMoving = 0;
+        const lastMoving = Array(count).fill(0);
         const turns = Array(count).fill(0);
         for(let frame=1; frame<flight.frames.length; frame++) {
           const a=flight.frames[frame-1],b=flight.frames[frame];
@@ -40,11 +40,12 @@ describe("contactos de dados y caras",()=>{
             const j=i*7;
             const angle=new Quaternion().fromArray(a,j+3).normalize().angleTo(new Quaternion().fromArray(b,j+3).normalize());
             turns[i]+=angle/(2*Math.PI);
-            if(angle>.003 || Math.hypot(a[j]-b[j],a[j+1]-b[j+1],a[j+2]-b[j+2])>.001) lastMoving=frame*flight.frameStep;
+            if(angle>.003 || Math.hypot(a[j]-b[j],a[j+1]-b[j+1],a[j+2]-b[j+2])>.001) lastMoving[i]=frame*flight.frameStep;
           }
         }
-        expect(lastMoving, `no long frozen hold seed ${seed}`).toBeGreaterThan(flight.duration-1.2);
-        expect(Math.min(...turns), `multiple rotations seed ${seed}`).toBeGreaterThan(2);
+        expect(Math.max(...lastMoving), `no long frozen hold seed ${seed}`).toBeGreaterThan(flight.duration-1.2);
+        expect(Math.min(...lastMoving), `each die still moves beyond second 10, seed ${seed}`).toBeGreaterThanOrEqual(10);
+        expect(Math.min(...turns), `multiple rotations seed ${seed}`).toBeGreaterThan(3);
         for(let i=0;i<count;i++) {
           const j=i*7;
           expect([...end.slice(j,j+7)].every(Number.isFinite)).toBe(true);

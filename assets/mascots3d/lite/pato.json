@@ -1,0 +1,9 @@
+{
+  "name": "pato",
+  "source": "public\\models\\mascots\\pato.glb",
+  "trianglesBefore": 118432,
+  "trianglesAfter": 35585,
+  "sourceBytes": 6958448,
+  "liteBytes": 3040196,
+  "textureMaxSize": 1024
+}

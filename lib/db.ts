@@ -1,428 +1,155 @@
-import Database from "better-sqlite3";
-import path from "path";
+import "server-only";
+import { getDatabase, type SqlClient } from "./data/database";
+import { displaySoles } from "./data/money";
+import { walletIsDemo } from "./wallet";
+import type { Player, GameResult } from "@/types";
 
-// Interfaces para tipado estricto
 export interface Jugador {
-  dni: string;
-  nombres: string;
-  celular?: string;
-  codigo_yapeo?: string;
-  monto_yapeo?: number;
-  puntos: number;
-  partidas_jugadas: number;
-  partidas_ganadas: number;
-  total_ganado: number;
-  racha_actual: number;
-  mejor_racha: number;
-  titulo?: string;
-  creado?: string;
+  id: string; dni: string; nombres: string; celular?: string; codigo_yapeo?: string;
+  monto_yapeo?: number; saldo_real: number; disponible_centimos: string; demo: boolean;
+  puntos: number; partidas_jugadas: number; partidas_ganadas: number; total_ganado: number;
+  total_ganado_centimos: string; racha_actual: number; mejor_racha: number; titulo?: string; creado?: string;
 }
-
 export interface Partida {
-  id?: number;
-  modo: string;
-  monto: number;
-  pozo: number;
-  ganador_dni: string;
-  ganador_nombre: string;
-  premio: number;
-  jugadores_json: string;
-  resultados_json: string;
-  duracion_ms: number;
-  hubo_empate: number;
-  rondas_empate: number;
-  fecha?: string;
+  id: string; modo: string; monto: number; pozo: number; ganador_dni: string; ganador_nombre: string;
+  premio: number; jugadores_json: string; resultados_json: string; duracion_ms: number;
+  hubo_empate: number; rondas_empate: number; fecha?: string;
+  monto_centimos: string; pozo_centimos: string; premio_centimos: string; demo: boolean; won?: boolean;
 }
-
-import { Player, GameResult } from "@/types";
-
 export interface LiveState {
-  jugadores: Player[];
-  monto: number;
-  pozo: number;
-  ganador: Player | null;
-  resultado: GameResult | null;
-  fase: string;
-  countdown: number;
-  ranking: Player[];
-  updated_at: string;
+  jugadores: Player[]; monto: number; pozo: number; ganador: Player | null; resultado: GameResult | null;
+  fase: string; countdown: number; ranking: Player[]; updated_at: string;
 }
-
 export interface Transaccion {
-  id: number;
-  dni: string;
-  nombres?: string;
-  operacion: string;
-  tipo: 'ingreso' | 'egreso';
-  monto: number;
-  fecha: string;
+  id: string; dni: string; nombres?: string; operacion: string; tipo: "ingreso" | "egreso";
+  monto: number; monto_centimos: string; fecha: string; demo: boolean;
 }
-
 export interface EstadisticasGlobales {
-  totalPartidas: number;
-  totalDinero: string;
-  totalJugadores: number;
+  totalPartidas: number; totalDinero: string; totalJugadores: number;
   topGanador: { nombres: string; partidas_ganadas: number } | null;
   mejorRacha: { nombres: string; mejor_racha: number } | null;
   masJugadas: { nombres: string; partidas_jugadas: number } | null;
 }
-
-let db: Database.Database | null = null;
-
-const DB_SCHEMA = `
-    CREATE TABLE IF NOT EXISTS manual_rolls (
-      match_id TEXT PRIMARY KEY,
-      match_json TEXT NOT NULL,
-      creada DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-    CREATE TABLE IF NOT EXISTS jugadores (
-      dni TEXT PRIMARY KEY,
-      nombres TEXT NOT NULL,
-      celular TEXT,
-      codigo_yapeo TEXT,
-      monto_yapeo REAL DEFAULT 0,
-      puntos INTEGER DEFAULT 0,
-      partidas_jugadas INTEGER DEFAULT 0,
-      partidas_ganadas INTEGER DEFAULT 0,
-      total_ganado REAL DEFAULT 0,
-      racha_actual INTEGER DEFAULT 0,
-      mejor_racha INTEGER DEFAULT 0,
-      titulo TEXT DEFAULT '',
-      pin_hash TEXT,
-      activo INTEGER NOT NULL DEFAULT 1,
-      creado DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS partidas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      modo TEXT DEFAULT 'normal',
-      monto INTEGER DEFAULT 10,
-      pozo INTEGER DEFAULT 0,
-      ganador_dni TEXT,
-      ganador_nombre TEXT,
-      premio REAL DEFAULT 0,
-      jugadores_json TEXT,
-      resultados_json TEXT,
-      duracion_ms INTEGER DEFAULT 0,
-      hubo_empate INTEGER DEFAULT 0,
-      rondas_empate INTEGER DEFAULT 0,
-      fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS estado_live (
-      id INTEGER PRIMARY KEY DEFAULT 1,
-      jugadores_json TEXT DEFAULT '[]',
-      monto INTEGER DEFAULT 10,
-      pozo INTEGER DEFAULT 0,
-      ganador_json TEXT DEFAULT 'null',
-      resultado_json TEXT DEFAULT 'null',
-      fase TEXT DEFAULT 'esperando',
-      countdown INTEGER DEFAULT 0,
-      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS transacciones (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      dni TEXT NOT NULL,
-      operacion TEXT,
-      tipo TEXT, 
-      monto REAL DEFAULT 0,
-      referencia TEXT,
-      fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS wallet (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      dni TEXT NOT NULL UNIQUE,
-      saldo_real REAL NOT NULL DEFAULT 0 CHECK (saldo_real >= 0),
-      saldo_bono REAL NOT NULL DEFAULT 0 CHECK (saldo_bono >= 0),
-      moneda_ingame INTEGER NOT NULL DEFAULT 0 CHECK (moneda_ingame >= 0),
-      FOREIGN KEY (dni) REFERENCES jugadores(dni) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS matchmaking_queue (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      dni TEXT NOT NULL UNIQUE,
-      modo TEXT NOT NULL CHECK (modo IN ('duelo', 'batalla')),
-      monto INTEGER NOT NULL CHECK (monto IN (2, 5, 10, 20, 30, 40, 50, 100)),
-      estado TEXT NOT NULL DEFAULT 'esperando',
-      joined_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (dni) REFERENCES jugadores(dni) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS salas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      modo TEXT NOT NULL,
-      monto INTEGER NOT NULL,
-      estado TEXT NOT NULL DEFAULT 'lista_para_iniciar',
-      jugadores_json TEXT NOT NULL DEFAULT '[]',
-      equipo_a_json TEXT,
-      creada DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );
-
-    CREATE TABLE IF NOT EXISTS online_partidas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      sala_id INTEGER NOT NULL UNIQUE,
-      ganador_json TEXT NOT NULL,
-      resultados_json TEXT NOT NULL,
-      estado TEXT NOT NULL DEFAULT 'completada',
-      creada DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS online_room_views (
-      sala_id INTEGER NOT NULL,
-      dni TEXT NOT NULL,
-      viewed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      PRIMARY KEY (sala_id, dni),
-      FOREIGN KEY (sala_id) REFERENCES salas(id) ON DELETE CASCADE,
-      FOREIGN KEY (dni) REFERENCES jugadores(dni) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS teams (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nombre TEXT NOT NULL,
-      lider_dni TEXT NOT NULL,
-      miembros_json TEXT NOT NULL DEFAULT '[]',
-      creado DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (lider_dni) REFERENCES jugadores(dni) ON DELETE CASCADE
-    );
-
-    CREATE TABLE IF NOT EXISTS rate_limit (
-      key TEXT PRIMARY KEY,
-      count INTEGER NOT NULL DEFAULT 1,
-      reset_at INTEGER NOT NULL
-    );
-
-    CREATE INDEX IF NOT EXISTS idx_matchmaking_busqueda
-      ON matchmaking_queue(modo, monto, estado, joined_at);
-    CREATE INDEX IF NOT EXISTS idx_partidas_fecha ON partidas(fecha DESC);
-    CREATE INDEX IF NOT EXISTS idx_rate_limit_reset ON rate_limit(reset_at);
-`;
-
-// Helper para manejo seguro de JSON
-const JsonUtils = {
-  parse: <T>(json: string, fallback: T): T => {
-    try { return JSON.parse(json) || fallback; } 
-    catch { return fallback; }
-  },
-  stringify: (obj: any): string => JSON.stringify(obj || {})
-};
-
-export function getDB(): Database.Database {
-  if (!db) {
-    const dbPath = process.env.DATABASE_PATH
-      ? path.resolve(process.env.DATABASE_PATH)
-      : path.join(process.cwd(), "database.db");
-    db = new Database(dbPath);
-    db.pragma("journal_mode = WAL");
-    db.pragma("synchronous = NORMAL");
-    db.pragma("wal_autocheckpoint = 100");
-    db.pragma("foreign_keys = ON");
-    db.pragma("busy_timeout = 5000");
-    initDB(db);
-  }
-  return db;
-}
-
-function initDB(db: Database.Database) {
-  db.exec(DB_SCHEMA);
-
-  // Migraciones Rápidas y Seed
-  const row = db.prepare("SELECT id FROM estado_live WHERE id = 1").get();
-  if (!row) db.prepare("INSERT INTO estado_live (id) VALUES (1)").run();
-
-  // Asegurar columnas (envolviendo en try/catch silencioso para simplificar refactor)
-  const safeAddColumn = (table: string, col: string, type: string) => {
-    try { db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${type}`); } catch {}
-  };
-
-  safeAddColumn("jugadores", "racha_actual", "INTEGER DEFAULT 0");
-  safeAddColumn("jugadores", "mejor_racha", "INTEGER DEFAULT 0");
-  safeAddColumn("jugadores", "titulo", "TEXT DEFAULT ''");
-  safeAddColumn("jugadores", "pin_hash", "TEXT");
-  safeAddColumn("jugadores", "activo", "INTEGER NOT NULL DEFAULT 1");
-  safeAddColumn("partidas", "duracion_ms", "INTEGER DEFAULT 0");
-  safeAddColumn("partidas", "external_id", "TEXT");
-  safeAddColumn("transacciones", "referencia", "TEXT");
-  safeAddColumn("online_partidas", "replay_json", "TEXT");
-
-  db.exec(`
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_partidas_external_id
-      ON partidas(external_id) WHERE external_id IS NOT NULL;
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_transacciones_referencia
-      ON transacciones(referencia) WHERE referencia IS NOT NULL;
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_matchmaking_dni ON matchmaking_queue(dni);
-    CREATE UNIQUE INDEX IF NOT EXISTS idx_online_partidas_sala ON online_partidas(sala_id);
-    INSERT OR IGNORE INTO wallet (dni, saldo_real)
-      SELECT dni, MAX(COALESCE(monto_yapeo, 0), 0) FROM jugadores;
-  `);
-  db.pragma("optimize");
-}
-
-// ========= VALIDATION & HELPERS =========
-
 export const Validators = {
   dni: (dni: string) => /^\d{8}$/.test(dni?.trim() || ""),
-  monto: (monto: number) => [2, 5, 10, 20, 30, 40, 50, 100].includes(Number(monto))
+  monto: (monto: number) => [2, 5, 10, 20, 30, 40, 50, 100].includes(Number(monto)),
 };
-
 export const validarDNI = Validators.dni;
-
-// ========= LIVE STATE =========
-
-export function getLiveState(): LiveState | null {
-  const db = getDB();
-  const row = db.prepare("SELECT * FROM estado_live WHERE id = 1").get() as any;
+type PlayerRow = Omit<Jugador, "saldo_real" | "monto_yapeo" | "total_ganado">;
+const playerColumns = `u.id,u.dni,u.nombres,u.celular,u.puntos,u.partidas_jugadas,u.partidas_ganadas,
+  u.total_ganado_centimos::text,u.racha_actual,u.mejor_racha,u.titulo,u.creado_en::text AS creado,
+  COALESCE(b.disponible_centimos,0)::text AS disponible_centimos,COALESCE(b.demo,$1) AS demo`;
+function projectPlayer(p: PlayerRow): Jugador {
+  return { ...p, saldo_real: displaySoles(p.disponible_centimos), monto_yapeo: displaySoles(p.disponible_centimos),
+    total_ganado: displaySoles(p.total_ganado_centimos) };
+}
+export async function getJugador(dni: string) {
+  const result = await getDatabase().query<PlayerRow>(`SELECT ${playerColumns} FROM usuarios u
+    LEFT JOIN billeteras b ON b.usuario_id=u.id AND b.demo=$1 WHERE u.dni=$2`, [walletIsDemo(), dni]);
+  return result.rows[0] ? projectPlayer(result.rows[0]) : null;
+}
+export async function getTodosJugadores(): Promise<Jugador[]> {
+  const result = await getDatabase().query<PlayerRow>(`SELECT ${playerColumns} FROM usuarios u
+    LEFT JOIN billeteras b ON b.usuario_id=u.id AND b.demo=$1 ORDER BY u.puntos DESC,u.partidas_jugadas DESC`, [walletIsDemo()]);
+  return result.rows.map(projectPlayer);
+}
+export async function buscarJugadores(query: string) {
+  const result = await getDatabase().query<PlayerRow>(`SELECT ${playerColumns} FROM usuarios u
+    LEFT JOIN billeteras b ON b.usuario_id=u.id AND b.demo=$1 WHERE u.dni=$2 OR u.nombres ILIKE $3 LIMIT 20`,
+    [walletIsDemo(), query, `%${query}%`]);
+  return result.rows.map(projectPlayer);
+}
+export async function getRanking(includeDni = false) {
+  const result = await getDatabase().query<{dni: string; nombres: string; puntos: number; partidas_ganadas: number;
+    partidas_jugadas: number; total_ganado_centimos: string; racha_actual: number; mejor_racha: number; titulo: string}>(
+    `SELECT dni,nombres,puntos,partidas_ganadas,partidas_jugadas,total_ganado_centimos::text,
+      racha_actual,mejor_racha,titulo FROM usuarios WHERE puntos>0 ORDER BY puntos DESC,id LIMIT 20`);
+  return result.rows.map(({dni, ...p}, index) => ({...p, ...(includeDni ? {dni} : {}), rank: index + 1,
+    total_ganado: displaySoles(p.total_ganado_centimos)}));
+}
+export async function registrarJugadorEnTransaccion(client: SqlClient, dni: string, nombres: string, celular = "") {
+  if (!Validators.dni(dni) || nombres.trim().length < 2 || nombres.length > 100 || celular.length > 30) throw new Error("Datos de jugador inválidos");
+  const result = await client.query<{id: string}>(`INSERT INTO usuarios(dni,nombres,celular) VALUES($1,$2,$3)
+    ON CONFLICT(dni) DO UPDATE SET nombres=excluded.nombres,celular=excluded.celular RETURNING id`, [dni.trim(),nombres.trim(),celular]);
+  const userId = result.rows[0].id;
+  await client.query("INSERT INTO billeteras(usuario_id,demo) VALUES($1,true),($1,false) ON CONFLICT(usuario_id,demo) DO NOTHING",[userId]);
+  await client.query("INSERT INTO limites_usuario(usuario_id) VALUES($1) ON CONFLICT DO NOTHING",[userId]);
+  return userId;
+}
+// Legacy deposit arguments are ignored: only the verified payment ledger may credit real funds.
+export async function registrarJugadorSeguro(dni: string,nombres: string,celular?: string,_codigo?: string,_monto?: number | string) {
+  return getDatabase().transaction(client => registrarJugadorEnTransaccion(client,dni,nombres,celular));
+}
+export async function getLiveState(): Promise<LiveState | null> {
+  const result = await getDatabase().query<{payload: Partial<LiveState>; updated_at: string}>("SELECT payload,updated_at::text FROM estado_live WHERE id=1");
+  const row = result.rows[0];
   if (!row) return null;
-
-  const ranking = db.prepare(`
-    SELECT dni, nombres, puntos, partidas_ganadas, total_ganado, racha_actual, mejor_racha, titulo
-    FROM jugadores WHERE puntos > 0 ORDER BY puntos DESC LIMIT 10
-  `).all();
-
-  return {
-    jugadores: JsonUtils.parse(row.jugadores_json, []),
-    monto: row.monto,
-    pozo: row.pozo,
-    ganador: JsonUtils.parse(row.ganador_json, null),
-    resultado: JsonUtils.parse(row.resultado_json, null),
-    fase: row.fase,
-    countdown: row.countdown,
-    ranking: ranking as Player[],
-    updated_at: row.updated_at,
-  };
+  return {jugadores:[],monto:10,pozo:0,ganador:null,resultado:null,fase:"esperando",countdown:0,
+    ...row.payload,ranking:await getRanking(true) as Player[],updated_at:row.updated_at};
 }
-
-export function updateLiveState(updates: Partial<Omit<LiveState, 'ranking' | 'updated_at'>>) {
-  const db = getDB();
-  const fields: string[] = [];
-  const values: any[] = [];
-
-  const mapField = (key: string, dbKey: string, isJson = false) => {
-    if ((updates as any)[key] !== undefined) {
-      fields.push(`${dbKey} = ?`);
-      values.push(isJson ? JsonUtils.stringify((updates as any)[key]) : (updates as any)[key]);
-    }
-  };
-
-  mapField('jugadores', 'jugadores_json', true);
-  mapField('monto', 'monto');
-  mapField('pozo', 'pozo');
-  mapField('ganador', 'ganador_json', true);
-  mapField('resultado', 'resultado_json', true);
-  mapField('fase', 'fase');
-  mapField('countdown', 'countdown');
-
-  if (fields.length > 0) {
-    values.push(1); // ID = 1
-    db.prepare(`UPDATE estado_live SET ${fields.join(", ")}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`).run(...values);
-  }
+export async function updateLiveState(updates: Partial<Omit<LiveState,"ranking" | "updated_at">>) {
+  const allowed = ["jugadores","monto","pozo","ganador","resultado","fase","countdown"];
+  const payload = Object.fromEntries(Object.entries(updates).filter(([key]) => allowed.includes(key)));
+  await getDatabase().query("UPDATE estado_live SET payload=payload || $1::jsonb,updated_at=now() WHERE id=1",[JSON.stringify(payload)]);
 }
-
-// ========= PLAYER REGISTRATION (SAFE) =========
-
-export function registrarJugadorSeguro(dni: string, nombres: string, celular?: string, codigoYapeo?: string, montoYapeo?: number | string) {
-  const db = getDB();
-  db.prepare(`
-    INSERT INTO jugadores (dni, nombres, celular, codigo_yapeo, monto_yapeo)
-    VALUES (?, ?, ?, ?, 0)
-    ON CONFLICT(dni) DO UPDATE SET
-      nombres = excluded.nombres,
-      celular = excluded.celular,
-      codigo_yapeo = CASE
-        WHEN excluded.codigo_yapeo != '' THEN excluded.codigo_yapeo
-        ELSE jugadores.codigo_yapeo
-      END
-  `).run(dni, nombres, celular || "", codigoYapeo || "");
-  db.prepare("INSERT OR IGNORE INTO wallet (dni) VALUES (?)").run(dni);
+export async function getPartidas(limit = 20, dni?: string): Promise<Partida[]> {
+  const count = Math.max(1,Math.min(100,Math.trunc(limit)));
+  const result = await getDatabase().query<{id:string; modo:string; monto_centimos:string; pozo_centimos:string;
+    premio_centimos:string; ganador_dni:string; ganador_nombre:string; duracion_ms:number; fecha:string; demo:boolean;
+    replay: {players?: unknown[]; rounds?: unknown[]}; jugadores:unknown[]; won:boolean}>(`SELECT p.id,p.modo,
+    p.monto_entrada_centimos::text AS monto_centimos,p.pozo_centimos::text,p.premio_centimos::text,
+    COALESCE(w.dni,'') AS ganador_dni,COALESCE(w.nombres,CASE WHEN p.ganador_equipo IS NOT NULL THEN 'Equipo ' || p.ganador_equipo ELSE '' END) AS ganador_nombre,
+    p.duracion_ms,p.finalizada_en::text AS fecha,p.demo,p.replay,
+    COALESCE((SELECT jsonb_agg(jsonb_build_object('dni',u.dni,'nombres',u.nombres) ORDER BY pt.id) FROM participantes pt JOIN usuarios u ON u.id=pt.usuario_id WHERE pt.partida_id=p.id),'[]') AS jugadores,
+    EXISTS(SELECT 1 FROM participantes pt JOIN usuarios u ON u.id=pt.usuario_id WHERE pt.partida_id=p.id AND u.dni=$2 AND pt.premio_centimos>0) AS won
+    FROM partidas p LEFT JOIN usuarios w ON w.id=p.ganador_usuario_id
+    WHERE p.estado='finalizada' AND ($2::text IS NULL OR EXISTS(SELECT 1 FROM participantes pt JOIN usuarios u ON u.id=pt.usuario_id WHERE pt.partida_id=p.id AND u.dni=$2))
+    ORDER BY p.finalizada_en DESC,p.id LIMIT $1`,[count,dni ?? null]);
+  const current = result.rows.map(p => ({id:p.id,modo:p.modo,monto:displaySoles(p.monto_centimos),pozo:displaySoles(p.pozo_centimos),
+    premio:displaySoles(p.premio_centimos),ganador_dni:p.ganador_dni,ganador_nombre:p.ganador_nombre,
+    monto_centimos:p.monto_centimos,pozo_centimos:p.pozo_centimos,premio_centimos:p.premio_centimos,demo:p.demo,won:p.won,
+    jugadores_json:JSON.stringify(p.jugadores),resultados_json:JSON.stringify(p.replay?.rounds ?? []),duracion_ms:p.duracion_ms,
+    hubo_empate:(p.replay?.rounds?.length ?? 0)>1 ? 1 : 0,rondas_empate:Math.max(0,(p.replay?.rounds?.length ?? 0)-1),fecha:p.fecha}));
+  const previous = await getDatabase().query<Omit<Partida,"monto"|"pozo"|"premio"|"jugadores_json"|"resultados_json"> & {jugadores:unknown[];resultados:unknown[]}>(`SELECT h.*,
+    h.monto_centimos::text,h.pozo_centimos::text,h.premio_centimos::text,h.fecha::text,h.ganador_dni=$2 AS won
+    FROM historial_partidas_legacy h WHERE ($2::text IS NULL OR EXISTS(SELECT 1 FROM jsonb_array_elements(h.jugadores) j WHERE j->>'dni'=$2))
+    ORDER BY h.fecha DESC,h.id LIMIT $1`,[count,dni??null]);
+  const legacy = previous.rows.map(p=>({...p,monto:displaySoles(p.monto_centimos),pozo:displaySoles(p.pozo_centimos),premio:displaySoles(p.premio_centimos),
+    jugadores_json:JSON.stringify(p.jugadores),resultados_json:JSON.stringify(p.resultados)}));
+  return [...current,...legacy].sort((a,b)=>Date.parse(b.fecha??"")-Date.parse(a.fecha??"")).slice(0,count);
 }
-
-// ========= FINANCIAL AUDITING =========
-
-export function registrarTransaccion(dni: string, operacion: string, tipo: 'ingreso' | 'egreso', monto: number, referencia?: string) {
-  const db = getDB();
-  db.prepare(`
-    INSERT INTO transacciones (dni, operacion, tipo, monto, referencia)
-    VALUES (?, ?, ?, ?, ?)
-  `).run(dni, operacion, tipo, monto, referencia || null);
+export async function getTodasTransacciones(): Promise<Transaccion[]> {
+  const result = await getDatabase().query<{id:string; dni:string; nombres:string; operacion:string; monto_centimos:string; fecha:string; demo:boolean}>(
+    `SELECT m.id::text,COALESCE(u.dni,b.sistema) AS dni,COALESCE(u.nombres,b.sistema) AS nombres,
+      COALESCE(NULLIF(m.descripcion,''),m.tipo) AS operacion,m.monto_centimos::text,m.creado_en::text AS fecha,b.demo
+      FROM movimientos m JOIN billeteras b ON b.id=m.billetera_id LEFT JOIN usuarios u ON u.id=b.usuario_id
+      ORDER BY m.creado_en DESC,m.id DESC LIMIT 500`);
+  return result.rows.map(r => ({...r,tipo:BigInt(r.monto_centimos)<0n ? "egreso" : "ingreso",
+    monto:displaySoles(BigInt(r.monto_centimos)<0n ? -BigInt(r.monto_centimos) : r.monto_centimos)}));
 }
-
-export function getReporteFinanciero() {
-  const db = getDB();
-  const ingresos = (db.prepare("SELECT SUM(monto) as total FROM transacciones WHERE tipo = 'ingreso'").get() as any)?.total || 0;
-  const egresos = (db.prepare("SELECT SUM(monto) as total FROM transacciones WHERE tipo = 'egreso'").get() as any)?.total || 0;
-  
-  const history = db.prepare(`
-    SELECT date(fecha) as dateStr, tipo, SUM(monto) as total 
-    FROM transacciones 
-    GROUP BY date(fecha), tipo 
-    ORDER BY dateStr ASC
-  `).all() as any[];
-
-  return { ingresos, egresos, neta: ingresos - egresos, history };
+export async function getReporteFinanciero() {
+  // House cashflow only; summing every wallet would double-count internal transfers.
+  const result = await getDatabase().query<{dateStr:string; tipo:"ingreso"|"egreso"; total:string}>(`SELECT m.creado_en::date::text AS "dateStr",
+    CASE WHEN m.monto_centimos>=0 THEN 'ingreso' ELSE 'egreso' END AS tipo,SUM(ABS(m.monto_centimos))::text AS total
+    FROM movimientos m JOIN billeteras b ON b.id=m.billetera_id WHERE b.sistema='CASA' AND b.demo=$1
+    GROUP BY 1,2 ORDER BY 1`,[walletIsDemo()]);
+  let income = 0n, expense = 0n;
+  for (const row of result.rows) { if(row.tipo === "ingreso") income+=BigInt(row.total); else expense+=BigInt(row.total); }
+  return {ingresos:displaySoles(income),egresos:displaySoles(expense),neta:displaySoles(income-expense),
+    ingresos_centimos:String(income),egresos_centimos:String(expense),demo:walletIsDemo(),
+    history:result.rows.map(row=>({...row,total:displaySoles(row.total)}))};
 }
-
-export function getTodasTransacciones(): Transaccion[] {
-  const db = getDB();
-  return db.prepare("SELECT t.*, j.nombres FROM transacciones t LEFT JOIN jugadores j ON t.dni = j.dni ORDER BY t.fecha DESC LIMIT 500").all() as Transaccion[];
-}
-
-export function getTodosJugadores(): Jugador[] {
-  const db = getDB();
-  return db.prepare(`
-    SELECT j.*, COALESCE(w.saldo_real, 0) AS saldo_real
-    FROM jugadores j LEFT JOIN wallet w ON w.dni = j.dni
-    ORDER BY j.puntos DESC, j.partidas_jugadas DESC
-  `).all() as Jugador[];
-}
-
-// ========= STREAK TRACKING =========
-
-export function actualizarRachaGanador(ganadorDni: string, jugadoresDnis: string[]) {
-  const db = getDB();
-  
-  db.prepare(`
-    UPDATE jugadores SET 
-      racha_actual = racha_actual + 1,
-      mejor_racha = MAX(mejor_racha, racha_actual + 1)
-    WHERE dni = ?
-  `).run(ganadorDni);
-
-  const losers = jugadoresDnis.filter(d => d !== ganadorDni);
-  if (losers.length > 0) {
-    const placeholders = losers.map(() => "?").join(",");
-    db.prepare(`UPDATE jugadores SET racha_actual = 0 WHERE dni IN (${placeholders})`).run(...losers);
-  }
-}
-
-// ========= GLOBAL STATS =========
-
-export function getEstadisticasGlobales(): EstadisticasGlobales {
-  const db = getDB();
-  
-  const totalPartidas = (db.prepare("SELECT COUNT(*) as total FROM partidas").get() as any).total;
-  const totalDinero = (db.prepare("SELECT COALESCE(SUM(premio), 0) as total FROM partidas").get() as any).total;
-  const totalJugadores = (db.prepare("SELECT COUNT(*) as total FROM jugadores").get() as any).total;
-  
-  const topGanador = db.prepare(
-    "SELECT nombres, partidas_ganadas FROM jugadores ORDER BY partidas_ganadas DESC LIMIT 1"
-  ).get() as any;
-  
-  const mejorRacha = db.prepare(
-    "SELECT nombres, mejor_racha FROM jugadores ORDER BY mejor_racha DESC LIMIT 1"
-  ).get() as any;
-  
-  const masJugadas = db.prepare(
-    "SELECT nombres, partidas_jugadas FROM jugadores ORDER BY partidas_jugadas DESC LIMIT 1"
-  ).get() as any;
-
-  return {
-    totalPartidas,
-    totalDinero: Number(totalDinero).toFixed(2),
-    totalJugadores,
-    topGanador: topGanador || null,
-    mejorRacha: mejorRacha || null,
-    masJugadas: masJugadas || null,
-  };
+export async function getEstadisticasGlobales(): Promise<EstadisticasGlobales> {
+  const db = getDatabase();
+  const [totals,players,top,streak,played] = await Promise.all([
+    db.query<{count:string; total:string}>(`SELECT count(*)::text,COALESCE(sum(premio_centimos),0)::text AS total FROM (
+      SELECT premio_centimos FROM partidas WHERE estado='finalizada' AND demo=$1
+      UNION ALL SELECT premio_centimos FROM historial_partidas_legacy WHERE demo=$1) h`,[walletIsDemo()]),
+    db.query<{count:string}>("SELECT count(*)::text FROM usuarios"),
+    db.query<{nombres:string; partidas_ganadas:number}>("SELECT nombres,partidas_ganadas FROM usuarios ORDER BY partidas_ganadas DESC,id LIMIT 1"),
+    db.query<{nombres:string; mejor_racha:number}>("SELECT nombres,mejor_racha FROM usuarios ORDER BY mejor_racha DESC,id LIMIT 1"),
+    db.query<{nombres:string; partidas_jugadas:number}>("SELECT nombres,partidas_jugadas FROM usuarios ORDER BY partidas_jugadas DESC,id LIMIT 1"),
+  ]);
+  return {totalPartidas:Number(totals.rows[0].count),totalDinero:displaySoles(totals.rows[0].total).toFixed(2),
+    totalJugadores:Number(players.rows[0].count),topGanador:top.rows[0] ?? null,mejorRacha:streak.rows[0] ?? null,masJugadas:played.rows[0] ?? null};
 }

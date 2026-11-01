@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useId } from "react";
 import { GameResult, LevelUp } from "@/types";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { DADOS_DISPONIBLES } from "@/lib/dados";
@@ -18,6 +18,43 @@ interface GameResultsProps {
   onDismissLevelUp: () => void;
 }
 
+function LevelUpDialog({ levelUp, onDismiss }: { levelUp: LevelUp; onDismiss: () => void }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const descriptionId = useId();
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    dialog.querySelector<HTMLButtonElement>("button")?.focus();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
+  }, []);
+
+  return (
+    <dialog ref={dialogRef} className="levelup-modal" aria-labelledby={titleId} aria-describedby={descriptionId}
+      onClose={event => { if (!event.currentTarget.open) onDismiss(); }}
+      onClick={event => {
+        if (event.target !== event.currentTarget) return;
+        const bounds = event.currentTarget.getBoundingClientRect();
+        if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) event.currentTarget.close();
+      }}>
+      <div className="levelup-emoji" aria-hidden="true">{levelUp.emoji}</div>
+      <h2 id={titleId} className="levelup-title">¡ASCENSO DE PODER!</h2>
+      <div className="levelup-level">{levelUp.nombre}</div>
+      <p id={descriptionId} className="levelup-points">NUEVO RANGO ALCANZADO CON {levelUp.puntosTotal} PUNTOS</p>
+      <button className="btn btn-primary btn-lg btn-block levelup-continue" onClick={() => dialogRef.current?.close()}>CONTINUAR MI REINADO</button>
+    </dialog>
+  );
+}
+
 export default function GameResults({
   resultado,
   levelUp,
@@ -25,7 +62,6 @@ export default function GameResults({
   onDismissLevelUp
 }: GameResultsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const particlesRef = useRef<any>(null);
   const [imageError, setImageError] = useState(false);
   const reduceMotion = useReducedMotion();
 
@@ -33,20 +69,24 @@ export default function GameResults({
   const mascotConfig = resultado?.ganador.dadoId ? MASCOT_CONFIG[resultado.ganador.dadoId] : null;
 
   useEffect(() => {
+    if (reduceMotion) return;
+    let cancelled = false;
     import("@/lib/particleSystem").then(mod => {
-      particlesRef.current = mod;
-      if (containerRef.current && !reduceMotion) {
+      if (containerRef.current && !cancelled) {
         mod.victoryExplosion(containerRef.current, 50, 30);
         if (window.innerWidth >= 700) mod.coinShower(containerRef.current);
         mod.screenFlash(containerRef.current, "rgba(255,215,0,0.16)", 420);
       }
     });
 
-    // Sound effect
+    return () => { cancelled = true; };
+  }, [reduceMotion]);
+
+  useEffect(() => {
     import("@/lib/soundEngine").then(mod => {
       mod.playWinFanfare?.();
     });
-  }, [reduceMotion]);
+  }, []);
 
   if (!resultado) return null;
   const sortedResults = [...resultado.resultados].sort((a, b) => Number(b.dni === resultado.ganador.dni) - Number(a.dni === resultado.ganador.dni));
@@ -81,7 +121,8 @@ export default function GameResults({
               fontFamily: "'Playfair Display', serif",
               fontSize: 'clamp(24px, 4vw, 42px)',
               fontWeight: 900,
-              letterSpacing: '10px',
+              letterSpacing: 'clamp(1px, 1vw, 6px)',
+              overflowWrap: 'anywhere',
               color: 'var(--gold)',
               textShadow: '0 0 40px rgba(212,175,55,0.8), 0 0 80px rgba(212,175,55,0.4)',
               marginTop: 8,
@@ -105,18 +146,18 @@ export default function GameResults({
             <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: 1, background: 'linear-gradient(90deg,transparent,rgba(212,175,55,0.6),transparent)' }} />
 
             {/* Mascot Reveal Section */}
-            <div style={{ position: 'relative', marginBottom: 40, width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', marginBottom: 24, width: '100%', display: 'flex', justifyContent: 'center' }}>
               <AnimatePresence>
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                  initial={reduceMotion ? false : { scale: 0.8, opacity: 0, y: 20 }}
                   animate={{ scale: 1, opacity: 1, y: 0 }}
-                  transition={{
+                  transition={reduceMotion ? { duration: 0 } : {
                     type: "spring",
                     stiffness: 260,
                     damping: 20,
                     delay: 0.3
                   }}
-                  style={{ position: 'relative', width: '80%', display: 'block' }}
+                  style={{ position: 'relative', width: '100%', maxWidth: 520, minWidth: 0, display: 'block' }}
                 >
                   <div style={{
                     position: 'absolute',
@@ -170,24 +211,26 @@ export default function GameResults({
                   )}
 
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    className="results-mascot-label"
+                    initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}
+                    transition={reduceMotion ? { duration: 0 } : { delay: 0.7 }}
                     style={{
-                      position: 'absolute',
-                      bottom: -18,
-                      left: '50%',
-                      transform: 'translateX(-50%)',
+                      position: 'relative',
+                      margin: '12px auto 0',
+                      maxWidth: '100%',
+                      width: 'fit-content',
                       background: 'linear-gradient(135deg, #1A1A1A 0%, #050505 100%)',
                       border: `1px solid ${dadoConfig?.shadow || 'var(--gold)'}`,
                       boxShadow: `0 5px 15px rgba(0,0,0,0.9), 0 0 10px ${dadoConfig?.shadow || 'rgba(212,175,55,0.5)'}`,
-                      padding: '8px 24px',
+                      padding: '8px 12px',
                       borderRadius: 20,
                       fontSize: 14,
                       fontWeight: 800,
                       color: 'var(--gold)',
-                      whiteSpace: 'nowrap',
-                      letterSpacing: 2,
+                      whiteSpace: 'normal',
+                      overflowWrap: 'anywhere',
+                      letterSpacing: 1,
                       zIndex: 3,
                     }}
                   >
@@ -266,7 +309,7 @@ export default function GameResults({
 
           {/* Results Table */}
           <p style={{fontSize:12,opacity:0.7}}>Última tirada de cada jugador{resultado.rondas.length > 1 ? " (en rondas distintas)" : ""}.</p>
-          <table className="results-table" style={{ marginBottom: 16 }}>
+          <table className="results-table" tabIndex={0} aria-label="Última tirada de cada jugador" style={{ marginBottom: 16 }}>
             <thead>
               <tr>
                 <th style={{ fontFamily: "'Courier New', monospace", letterSpacing: 2, fontSize: 9 }}>POS</th>
@@ -280,7 +323,6 @@ export default function GameResults({
                   <tr
                     key={r.dni}
                     className={r.dni === resultado.ganador.dni ? "winner-row" : ""}
-                    style={{ opacity: r.dni === resultado.ganador.dni ? 1 : 0.55 }}
                   >
                     <td style={{ fontFamily: "'Courier New', monospace" }}>{r.dni === resultado.ganador.dni ? "★" : "·"}</td>
                     <td style={{ fontWeight: r.dni === resultado.ganador.dni ? 800 : 500 }}>
@@ -292,11 +334,11 @@ export default function GameResults({
                         {r.valor}
                       </span>
                     </td>
-                    <td style={{ fontSize: 9, fontWeight: 700, fontFamily: "'Courier New', monospace", letterSpacing: 1 }}>
+                    <td style={{ fontSize: 12, fontWeight: 700, fontFamily: "'Courier New', monospace", letterSpacing: 0.5 }}>
                       {r.dni === resultado.ganador.dni ? (
                         <span style={{ color: 'var(--neon-green)' }}>GANADOR</span>
                       ) : (
-                        <span style={{ color: 'rgba(255,255,255,0.3)' }}>DERROTA</span>
+                        <span style={{ color: '#e5e7eb' }}>DERROTA</span>
                       )}
                     </td>
                   </tr>
@@ -339,25 +381,7 @@ export default function GameResults({
       </div>
 
       {/* ===== LEVEL UP CELEBRATION ELITE 4.0 ===== */}
-      {levelUp && levelUp.nombre && (
-        <div className="levelup-overlay" onClick={onDismissLevelUp}>
-          <div className="levelup-modal" style={{ border: '3px solid var(--gold)', boxShadow: '0 0 100px var(--gold-glow-strong)' }}>
-            <div className="levelup-emoji" style={{ fontSize: '100px' }}>{levelUp.emoji}</div>
-            <div className="levelup-title" style={{ letterSpacing: '10px' }}>¡ASCENSO DE PODER!</div>
-            <div className="levelup-level" style={{ fontSize: '48px', margin: '20px 0' }}>{levelUp.nombre}</div>
-            <div className="levelup-points" style={{ fontSize: '18px', color: 'var(--gold-light)' }}>
-              NUEVO RANGO ALCANZADO CON {levelUp.puntosTotal} PUNTOS
-            </div>
-            <button
-              className="btn btn-primary btn-lg btn-block"
-              style={{ marginTop: 30, background: 'var(--gold-gradient)' }}
-              onClick={(e) => { e.stopPropagation(); onDismissLevelUp(); }}
-            >
-              CONTINUAR MI REINADO
-            </button>
-          </div>
-        </div>
-      )}
+      {levelUp?.nombre && <LevelUpDialog levelUp={levelUp} onDismiss={onDismissLevelUp} />}
     </>
   );
 }

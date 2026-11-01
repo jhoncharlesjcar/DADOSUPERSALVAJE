@@ -8,10 +8,9 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
   if (!(await isAdminAuthenticated())) redirect("/admin/login?next=/admin");
-  const jugadores = getTodosJugadores();
-  const reporte = getReporteFinanciero();
-  const transacciones = getTodasTransacciones();
-  const stats = getEstadisticasGlobales();
+  const [jugadores, reporte, transacciones, stats] = await Promise.all([
+    getTodosJugadores(), getReporteFinanciero(), getTodasTransacciones(), getEstadisticasGlobales(),
+  ]);
 
   return (
     <div style={{ padding: "40px 20px", background: "#05080E", minHeight: "100vh", color: "white", fontFamily: "'Inter', sans-serif" }}>

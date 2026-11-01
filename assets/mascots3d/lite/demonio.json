@@ -1,0 +1,9 @@
+{
+  "name": "demonio",
+  "source": "public\\models\\mascots\\demonio.glb",
+  "trianglesBefore": 37500,
+  "trianglesAfter": 11303,
+  "sourceBytes": 3494348,
+  "liteBytes": 1391916,
+  "textureMaxSize": 1024
+}

@@ -1,0 +1,9 @@
+{
+  "name": "oceano",
+  "source": "public\\models\\mascots\\oceano.glb",
+  "trianglesBefore": 160816,
+  "trianglesAfter": 48299,
+  "sourceBytes": 7899576,
+  "liteBytes": 3444332,
+  "textureMaxSize": 1024
+}

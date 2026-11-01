@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { updateBalance, deleteTransaction, setPlayerPin } from "./actions";
 import Link from "next/link";
 import { formatSoles } from "@/lib/currency";
@@ -30,13 +30,19 @@ export default function AdminClient({ initialJugadores, reporte, transacciones, 
   );
 
   const [toastMessage, setToastMessage] = useState("");
+  const pendingAdjustment = useRef<{ fingerprint: string; key: string } | null>(null);
 
   const handleUpdateBalance = async (dni: string, amount: number, isAdd: boolean) => {
+    const fingerprint = JSON.stringify([dni, amount, isAdd]);
+    if (pendingAdjustment.current?.fingerprint !== fingerprint) {
+      pendingAdjustment.current = { fingerprint, key: crypto.randomUUID() };
+    }
     setLoading(true);
-    const res = await updateBalance(dni, amount, isAdd);
+    const res = await updateBalance(dni, amount, isAdd, pendingAdjustment.current.key);
     setLoading(false);
     
     if (res.success) {
+      pendingAdjustment.current = null;
       setToastMessage("Operación exitosa");
       setTimeout(() => setToastMessage(""), 3000);
     } else {

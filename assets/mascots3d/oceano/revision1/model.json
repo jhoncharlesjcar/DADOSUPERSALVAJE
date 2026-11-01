@@ -1,0 +1,13 @@
+{
+  "name": "Titán del Océano",
+  "reference": "/mascots/oceano.webp",
+  "vertices": 12684,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

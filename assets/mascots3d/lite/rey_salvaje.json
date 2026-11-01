@@ -1,0 +1,9 @@
+{
+  "name": "rey_salvaje",
+  "source": "public\\models\\mascots\\rey_salvaje.glb",
+  "trianglesBefore": 159975,
+  "trianglesAfter": 48048,
+  "sourceBytes": 8197432,
+  "liteBytes": 3657708,
+  "textureMaxSize": 1024
+}

@@ -1,0 +1,13 @@
+{
+  "name": "La Sombra",
+  "reference": "/mascots/sombra.webp",
+  "vertices": 12068,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

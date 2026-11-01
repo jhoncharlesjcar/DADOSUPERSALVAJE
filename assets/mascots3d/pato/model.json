@@ -1,7 +1,8 @@
 {
   "name": "Pato Salvaje",
+  "revision": 2,
   "reference": "/mascots/pato.webp",
-  "vertices": 13882,
+  "vertices": 65320,
   "bones": 18,
   "clips": [
     "Idle",
@@ -9,5 +10,10 @@
     "Throw",
     "Hit",
     "Knockout"
-  ]
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
 }

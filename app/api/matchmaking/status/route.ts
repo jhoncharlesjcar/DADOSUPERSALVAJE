@@ -7,7 +7,7 @@ export async function GET() {
   if (!isOnlineModeEnabled()) return NextResponse.json({ error: "Modo online temporalmente no disponible" }, { status: 503 });
   try {
     const dni = await requirePlayer();
-    const status = getMatchStatus(dni);
+    const status = await getMatchStatus(dni);
     return NextResponse.json(status);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Error interno";

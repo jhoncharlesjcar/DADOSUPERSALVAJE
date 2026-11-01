@@ -45,8 +45,11 @@ next-env.d.ts
 *.db
 *.db-wal
 *.db-shm
+/.local-migration/
 # Local Blender runtime; source models and build scripts are kept separately.
-.tools/blender/
+.tools/
+tools/build-webpack.log
+tools/build-webpack.exit
 assets/mascots3d/**/*.blend1
 
 # Python

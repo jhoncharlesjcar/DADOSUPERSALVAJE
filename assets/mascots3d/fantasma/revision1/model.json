@@ -1,0 +1,13 @@
+{
+  "name": "La Fantasma",
+  "reference": "/mascots/fantasma.webp",
+  "vertices": 12180,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

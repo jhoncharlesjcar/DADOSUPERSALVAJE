@@ -1,7 +1,8 @@
 {
   "name": "Bestia de Fuego",
+  "revision": 2,
   "reference": "/mascots/bestia_fuego.webp",
-  "vertices": 13228,
+  "vertices": 78235,
   "bones": 18,
   "clips": [
     "Idle",
@@ -9,5 +10,10 @@
     "Throw",
     "Hit",
     "Knockout"
-  ]
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
 }

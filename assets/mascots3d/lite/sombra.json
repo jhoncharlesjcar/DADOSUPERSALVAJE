@@ -1,0 +1,9 @@
+{
+  "name": "sombra",
+  "source": "public\\models\\mascots\\sombra.glb",
+  "trianglesBefore": 98302,
+  "trianglesAfter": 29545,
+  "sourceBytes": 5298004,
+  "liteBytes": 2321716,
+  "textureMaxSize": 1024
+}

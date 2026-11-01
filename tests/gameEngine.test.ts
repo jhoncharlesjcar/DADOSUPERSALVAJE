@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+vi.mock("server-only", () => ({}));
 import { GameEngine } from "../lib/gameEngine";
 import { calcularDistribucion } from "../lib/wallet";
 import type { Player } from "../types";
@@ -10,14 +11,14 @@ const players: Player[] = [
 
 describe("liquidación del juego", () => {
   it("reparte exactamente el pozo sin multiplicar los porcentajes", () => {
-    const split = calcularDistribucion(20);
-    expect(split).toEqual({ premioJugador: 16, gananciaRanking: 0.8, gananciaCasa: 3.2 });
-    expect(split.premioJugador + split.gananciaRanking + split.gananciaCasa).toBe(20);
+    const split = calcularDistribucion(2000n);
+    expect(split).toEqual({ premioJugador: 1600n, gananciaRanking: 80n, gananciaCasa: 320n, premioPorGanador: 1600n });
+    expect(split.premioJugador + split.gananciaRanking + split.gananciaCasa).toBe(2000n);
   });
 
   it("rechaza pozos no válidos", () => {
-    expect(() => calcularDistribucion(0)).toThrow("Pozo inválido");
-    expect(() => calcularDistribucion(Number.NaN)).toThrow("Pozo inválido");
+    expect(() => calcularDistribucion(0n)).toThrow("Pozo inválido");
+    expect(() => calcularDistribucion(Number.NaN as unknown as bigint)).toThrow("Pozo inválido");
   });
 
   it("calcula el ganador únicamente desde los valores asociados por posición", () => {

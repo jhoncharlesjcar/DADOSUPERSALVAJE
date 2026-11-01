@@ -1,0 +1,9 @@
+{
+  "name": "emperador_viento",
+  "source": "public\\models\\mascots\\emperador_viento.glb",
+  "trianglesBefore": 129554,
+  "trianglesAfter": 38922,
+  "sourceBytes": 7234840,
+  "liteBytes": 3059312,
+  "textureMaxSize": 1024
+}

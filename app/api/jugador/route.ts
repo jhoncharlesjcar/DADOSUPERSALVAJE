@@ -1,33 +1,10 @@
-import { getDB } from "@/lib/db";
-import { NextResponse, NextRequest } from "next/server";
-import { Player } from "@/types";
+import { buscarJugadores } from "@/lib/db";
+import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/adminAuth";
-
-export async function GET(request: NextRequest) {
-  try {
-    await requireAdmin();
-  } catch {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-  }
-  const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q");
-
-  if (!q) {
-    return NextResponse.json({ error: "Búsqueda requerida" }, { status: 400 });
-  }
-
-  const db = getDB();
-  const resultados = db
-    .prepare(`
-      SELECT j.dni, j.nombres, j.celular, j.puntos, j.partidas_jugadas,
-             j.partidas_ganadas, j.total_ganado, j.racha_actual, j.mejor_racha,
-             j.titulo, COALESCE(w.saldo_real, 0) as saldo_real
-      FROM jugadores j 
-      LEFT JOIN wallet w ON j.dni = w.dni 
-      WHERE j.dni = ? OR j.nombres LIKE ? 
-      LIMIT 20
-    `)
-    .all(q, `%${q}%`) as Player[];
-
-  return NextResponse.json(resultados);
+export async function GET(request: Request) {
+  try { await requireAdmin(); } catch { return NextResponse.json({error:"No autorizado"},{status:401}); }
+  const q=new URL(request.url).searchParams.get("q")?.trim();
+  if(!q || q.length>100) return NextResponse.json({error:"Búsqueda requerida"},{status:400});
+  try { return NextResponse.json(await buscarJugadores(q),{headers:{"Cache-Control":"no-store"}}); }
+  catch { return NextResponse.json({error:"No se pudo consultar jugadores"},{status:503}); }
 }

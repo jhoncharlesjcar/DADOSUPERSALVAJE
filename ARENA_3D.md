@@ -1,5 +1,21 @@
 # Arena 3D y colección de mascotas
 
+## Seguimiento de la auditoría gráfica — 27 de octubre de 2026
+
+La intervención actual aborda los once hallazgos de [la auditoría gráfica](AUDITORIA_GRAFICA_2026-10-25.md#seguimiento-de-correcciones--27-de-octubre-de-2026). Las secciones fechadas anteriores se conservan como historial, no como verificación de cambios posteriores.
+
+La arena utiliza 21 tomas físicas validadas para grupos de 2–10 dados. Duran 14,5 s desde la primera salida (17,65 s con vaso y cámara), con 3,0187–16,0553 giros por dado y 2–69 contactos por toma en la sonda. Cada dado mantiene movimiento después de t=10 global; no significa diez segundos desde su propia salida ni choques continuos. La cámara cubre la trayectoria completa y se acerca al terminar. Pausas y pestañas ocultas no consumen tiempo; cambiar calidad conserva escena y reloj. Pasaron 22 pruebas y 84 proyecciones numéricas. [Métricas y límites](tools/arena-fix-results.md).
+
+La ilustración de celebración ya permanece visible mientras descarga el módulo del visor y hasta que el modelo esté listo; se recupera si el visor falla. Pasaron los cinco casos de `tests/mascot-celebration.test.tsx`, con visor simulado. El selector de mascotas ofrece calidad automática, ligera y completa: automática utiliza el GLB ligero con viewport de hasta 700 px o puntero grueso; ligera limita DPR a 1 y omite bloom, mientras completa conserva el límite de 1,75. La selección de calidad de mascotas es independiente de la arena.
+
+Las diez variantes ligeras están integradas: reducen aproximadamente un 70 % los triángulos y entre 55,4 y 60,2 % los bytes. Las cincuenta animaciones pasaron 250 muestras de suelo y límites finitos; se conservan esqueletos y duraciones. Datos y reproducción en [el informe de variantes ligeras](assets/mascots3d/lite/README.md). Poseidón revisión 3 ya está integrado, con rostro continuo, cuello más corto, barba curva y placas corregidas; se inspeccionaron reposo, celebración, detalle y render de su GLB ligero. La revisión artística no supone que el conjunto reproduzca las ilustraciones: siguen pendientes el parecido final, la melena del Rey y el neón de Pantera. Los renders de Blender y las pruebas numéricas no sustituyen la revisión en el visor.
+
+La interfaz incluye etiquetas adaptables, filas de derrota legibles, diálogo nativo de ascenso con recuperación de foco y scroll limitado por altura de pantalla, movimiento reducido en wrappers y ranking aplicado al grid item correcto. Los nombres de personajes provienen del catálogo común. Pasaron cuatro pruebas de resultados/diálogo, tres de activos y cinco de respaldo de celebración; la validación conjunta se registra en la auditoría.
+
+La validación visual de esta intervención en navegador está pendiente por el bloqueo de la política de URL local de la sesión anterior. No se han medido FPS, memoria ni descarga real en móviles. Los resultados de navegador descritos en las secciones históricas corresponden a sus fechas, no a esta continuación.
+
+**Cierre técnico:** 68 pruebas aprobadas en 14 archivos, TypeScript y ESLint de cambios correctos. Compilación de producción con Webpack aprobada. El script `build` ahora incluye `--webpack`: Turbopack falló al iniciar su subproceso de CSS en este entorno, también fuera del sandbox; la alternativa oficial compiló las rutas correctamente.
+
 ## Implementación
 
 - Three.js para renderizar y Cannon ES para contactos entre dados, mesa y borde. Ambas dependencias usan licencia MIT.
@@ -67,7 +83,59 @@ El visor `/mascotas` permite elegir entre las diez mascotas, girar y acercar la 
 
 Por indicación del usuario, el pulido hacia las ilustraciones se realiza primero sobre **Pantera Rosada**. La revisión 2 sustituye su armadura genérica por un abrigo entallado y rehace rostro, orejas, pelaje con manchas, cola, manos, botas y detalles de neón. Incluye dos atlas de 2048 px, 71 044 vértices fuente y un GLB de unos 5,78 MiB. Conserva los cinco clips y 18 huesos. Las demás mascotas no se regeneraron en esta revisión.
 
-`/mascotas` incorpora **Comparar con imagen**, con la ilustración original al lado del modelo. Los renders y el alcance artístico están documentados en [la revisión de Pantera](assets/mascots3d/pantera/REVISION.md). Todavía no se considera un parecido final aprobado. `revision1/` conserva su versión anterior; `build_pantera.py` genera la nueva candidata y `build_roster.py` la preserva cuando detecta la revisión 2.
+`/mascotas` incorpora **Comparar con imagen**, con la ilustración original al lado del modelo. Los renders y el alcance artístico están documentados en [la revisión de Pantera](assets/mascots3d/pantera/REVISION.md). El usuario aprobó esta Pantera como base para continuar, sin considerar alcanzada la fidelidad final de la ilustración. `revision1/` conserva su versión anterior; `build_pantera.py` genera la nueva candidata y `build_roster.py` la preserva cuando detecta la revisión 2.
+
+### Revisión individual de Pato — 23 de octubre de 2026
+
+Tras aprobar Pantera como base, el usuario pidió continuar **en el orden de la galería, una mascota a la vez**. Sigue Pato Salvaje (amarillo); después corresponde Titán del Océano (celeste). No se regeneró el resto de la colección.
+
+El generador individual `tools/blender/build_pato.py` rehace proporciones, pico, ojos, plumaje en capas, hombreras de plumas, corona, armadura con filigranas, capa oscura y patas palmeadas. Exporta una candidata animada con dos atlas de 2048 px. Los renders, límites del parecido y validación se detallan en [la revisión de Pato](assets/mascots3d/pato/REVISION.md). Se conserva `revision1/` como respaldo y el generador general preserva todas las mascotas con revisión 2 o superior.
+
+### Revisión individual del Titán del Océano — 23 de octubre de 2026
+
+Al pedir continuar después de presentar Pato, se trabaja únicamente Titán del Océano (celeste). Se rehacen torso y rostro con superficies continuas, escamas, branquias, aletas con membranas, coral ramificado, conchas curvas y armadura marina. La mano que ofrece el dado queda elevada. El visor usa una iluminación fría específica para este personaje.
+
+`tools/blender/build_oceano.py` genera la candidata y sus renders; `reference_pipeline.py` reúne las utilidades de escultura, horneado y revisión sin regenerar otros personajes. Se conserva la base anterior en `assets/mascots3d/oceano/revision1/`. El alcance y los resultados están en [la revisión del Titán](assets/mascots3d/oceano/REVISION.md). El siguiente personaje en el orden de la galería es La Fantasma (blanco).
+
+### Revisión individual de La Fantasma — 23 de octubre de 2026
+
+El siguiente pedido de continuar se aplica exclusivamente a La Fantasma (blanco). Se rehacen el yelmo curvo con visor negro, la silueta esbelta, la armadura plateada, los sigilos luminosos, la cadena del pecho y la capa perforada. Se añaden velos laterales parcialmente transparentes e iluminación fría específica en el visor.
+
+`tools/blender/build_fantasma.py` genera la candidata y los tres renders mediante las utilidades existentes de `reference_pipeline.py`. El respaldo anterior está en `assets/mascots3d/fantasma/revision1/`. El alcance, las limitaciones de la tela y el estado de validación están en [la revisión de La Fantasma](assets/mascots3d/fantasma/REVISION.md). Después corresponde La Sombra (negro).
+
+### Revisión individual de La Sombra — 24 de octubre de 2026
+
+El siguiente pedido de continuar se aplica exclusivamente a La Sombra (negro). La revisión rehace la capucha hueca con ojos violetas y rostro oculto, el cuello de tela, las placas negras superpuestas, los sigilos, las garras y el manto perforado. Se ajusta el visor con iluminación fría y borde violeta.
+
+`tools/blender/build_sombra.py` genera únicamente la candidata y tres renders mediante `reference_pipeline.py`. El respaldo anterior está en `assets/mascots3d/sombra/revision1/`. El alcance y el estado de validación están en [la revisión de La Sombra](assets/mascots3d/sombra/REVISION.md). Es una interpretación estilizada, sin simulación de tela ni vórtice de humo. Después corresponde El Rey Salvaje (verde).
+
+### Revisión individual de El Rey Salvaje — 24 de octubre de 2026
+
+El siguiente pedido de continuar se aplica exclusivamente a El Rey Salvaje (verde). Se rehacen el cráneo y hocico de león, la melena con hebras geométricas, la corona de esmeraldas y metal patinado, la armadura facetada y las enredaderas. Se añaden patas con dedos y garras y una cola curva con borla. El visor usa iluminación de borde verde.
+
+`tools/blender/build_rey_salvaje.py` genera únicamente la candidata y sus tres renders mediante `reference_pipeline.py`. Se conserva la base en `assets/mascots3d/rey_salvaje/revision1/`. El alcance, las limitaciones del pelaje y la validación están en [la revisión de El Rey Salvaje](assets/mascots3d/rey_salvaje/REVISION.md). Después corresponde Emperador del Viento (guinda).
+
+### Revisión individual de Emperador del Viento — 24 de octubre de 2026
+
+La revisión continúa exclusivamente con Emperador del Viento (guinda). Se rehacen la cabeza de águila, el pico curvo y el plumaje, y se añaden coraza curva con espirales, sellos de viento, capa perforada y un cetro con águila de alas abiertas. El visor utiliza luz de borde rosada.
+
+`tools/blender/build_emperador_viento.py` genera únicamente la candidata y sus tres renders mediante `reference_pipeline.py`. Se conserva la base en `assets/mascots3d/emperador_viento/revision1/`. El alcance y la validación están en [la revisión de Emperador del Viento](assets/mascots3d/emperador_viento/REVISION.md). Después corresponde Bestia de Fuego (naranja).
+
+### Revisión individual de Bestia de Fuego — 24 de octubre de 2026
+
+La revisión continúa exclusivamente con Bestia de Fuego (naranja). Se rehacen el hocico de zorro, las orejas altas, las mejillas blancas y la cola curva con punta marfil. Se añaden armadura de cobre, grabados de llama, surcos incandescentes y fuego mediante cintas emisivas. Estas llamas siguen los huesos y no constituyen una simulación de combustión.
+
+`tools/blender/build_bestia_fuego.py` genera únicamente la candidata y sus tres renders mediante `reference_pipeline.py`. Se conserva la base en `assets/mascots3d/bestia_fuego/revision1/`. El alcance y la validación están en [la revisión de Bestia de Fuego](assets/mascots3d/bestia_fuego/REVISION.md). Después corresponde Poseidón (azul).
+
+La revisión 2 está integrada: GLB de 7,75 MiB, 78 235 vértices fuente, 18 huesos, cinco clips y dos atlas de 2048 px. Pasaron la validación de animaciones y suelo, TypeScript, ESLint y las cinco pruebas de mascotas. Se inspeccionaron tres renders de Blender; la comprobación visual en navegador sigue pendiente. El pelaje y el fuego siguen siendo estilizados.
+
+### Revisión individual de Poseidón — 25 de octubre de 2026
+
+La revisión continúa con Poseidón (azul), el último de los nueve modelos iniciales que se están revisando individualmente. Se rehacen rostro humano, barba, cabello y casco con aletas, y se añaden coraza azul curva, placas abdominales, grabados marinos, brazos musculosos, capa plisada y tridente ornamentado en ambos extremos. El visor utiliza iluminación fría y borde azul.
+
+`tools/blender/build_poseidon.py` escribe la candidata en `assets/mascots3d/poseidon/revision2/`; `revision1/` conserva la versión anterior. El alcance y la validación están en [la revisión de Poseidón](assets/mascots3d/poseidon/REVISION.md). El parecido sigue siendo estilizado; la revisión individual no equivale a aprobación artística final del conjunto.
+
+La revisión 2 está integrada: 83 240 vértices fuente, 18 huesos, cinco clips, dos atlas de 2048 px y GLB de 7,78 MiB. Pasaron la validación de animaciones y suelo, TypeScript, ESLint y las cinco pruebas de mascotas. Se revisaron tres renders; falta comprobar esta revisión visualmente en navegador. Los otros nueve GLB conservaron sus hashes. Con Poseidón termina la primera pasada individual del orden acordado y queda pendiente el pulido artístico del conjunto.
 
 ### Demonio Salvaje
 
@@ -111,17 +179,17 @@ Desde la raíz del proyecto, en PowerShell:
 # Regenerar modelo, GLB y renders; reemplaza las salidas anteriores del prototipo
 & '.\.tools\blender\blender-4.5.9-windows-x64\blender.exe' --background --factory-startup --python '.\tools\blender\build_demonio.py'
 
-# Regenerar las otras nueve mascotas, preservando Demonio; reemplaza sus salidas anteriores
+# Regenerar bases sin revisión individual; preserva Demonio y mascotas con revisión >= 2
 & '.\.tools\blender\blender-4.5.9-windows-x64\blender.exe' --background --factory-startup --python '.\tools\blender\build_roster.py'
 
-# Regenerar solo una de las nueve, usando su identificador de archivo
-& '.\.tools\blender\blender-4.5.9-windows-x64\blender.exe' --background --factory-startup --python '.\tools\blender\build_roster.py' -- pantera
+# Generar la candidata individual de Pato (no copia automáticamente al GLB público)
+& '.\.tools\blender\blender-4.5.9-windows-x64\blender.exe' --background --factory-startup -t 6 --python '.\tools\blender\build_pato.py'
 
 # Comprobar las diez exportaciones con Three.js; sin --all comprueba solo Demonio
 node '.\tools\check-mascot.mjs' --all
 ```
 
-`tools/blender/build_demonio.py` genera geometría procedural original tomando la imagen como referencia artística; no reconstruye automáticamente esa imagen. La regeneración incluye el horneado y tres renders. `tools/blender/build_roster.py` genera las otras nueve mascotas sin modificar Demonio.
+`tools/blender/build_demonio.py` genera geometría procedural original tomando la imagen como referencia artística; no reconstruye automáticamente esa imagen. La regeneración incluye el horneado y tres renders. `tools/blender/build_roster.py` genera las bases de las otras mascotas sin modificar Demonio ni las revisiones individuales 2 o superiores.
 
 `tools/check-mascot.mjs --all` exige diez GLB y los cinco clips en cada uno. Quita las texturas del JSON antes de cargar la geometría en Three.js, ya que Node no decodifica imágenes; comprueba además los cuatro accesorios de Demonio y poses finitas y contacto con el suelo en cinco instantes de cada clip. No certifica la visualización de texturas, el acabado artístico ni sustituye la revisión visual de las animaciones.
 

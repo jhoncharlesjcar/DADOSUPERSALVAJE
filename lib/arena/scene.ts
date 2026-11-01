@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { DIE_SIZE, FACE_VALUES, FLIGHT_START, seededRandom, type Flight } from "./physics";
 import type { ArenaPlayer } from "./types";
+import { flightCameraBounds, flightCameraPose } from "./camera";
 
 export type Quality = "low" | "medium" | "high";
 export const PALETTE: Record<string, string> = { rojo: "#a52e2c", rosado: "#bd5283", amarillo: "#d5b557", celeste: "#318eac", blanco: "#e9e3cf", negro: "#282d33", verde: "#368c62", guinda: "#702d47", naranja: "#c77532", azul: "#355ab2" };
@@ -66,7 +67,7 @@ function diceMaterials(color: string, darkPips: boolean, size: number, bumps: Ma
 }
 
 export function createArenaScene(host: HTMLElement, players: ArenaPlayer[], flight: Flight, quality: Quality) {
-  const renderer = new THREE.WebGLRenderer({ antialias: quality !== "low", alpha: false, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, {low:1,medium:1.5,high:2}[quality]));
   renderer.shadowMap.enabled = quality !== "low";
   renderer.shadowMap.type = THREE.PCFShadowMap;
@@ -126,21 +127,16 @@ export function createArenaScene(host: HTMLElement, players: ArenaPlayer[], flig
   const geometry = new RoundedBoxGeometry(DIE_SIZE,DIE_SIZE,DIE_SIZE,3,0.065);
   const bumps = new Map<number, THREE.Texture>();
   const dice = players.map(player => {
-    const die = new THREE.Mesh(geometry,diceMaterials(PALETTE[player.dadoId] || PALETTE.rojo,["amarillo","blanco"].includes(player.dadoId),quality === "high" ? 512 : 256,bumps));
+    const die = new THREE.Mesh(geometry,diceMaterials(PALETTE[player.dadoId] || PALETTE.rojo,["amarillo","blanco"].includes(player.dadoId),512,bumps));
     die.castShadow = true; die.receiveShadow = true; scene.add(die); return die;
   });
   const q = new THREE.Quaternion(), nextQ = new THREE.Quaternion();
   const offsets = flight.offsets.map(value => new THREE.Quaternion(...value));
-  const finalFrame = flight.frames.at(-1)!;
-  const bounds = new THREE.Box3();
-  players.forEach((_, i) => bounds.expandByPoint(new THREE.Vector3(finalFrame[i*7],0,finalFrame[i*7+2])));
-  const center = bounds.getCenter(new THREE.Vector3()), span = bounds.getSize(new THREE.Vector3());
+  const bounds = flightCameraBounds(flight);
   function resize() {
     const width = Math.max(host.clientWidth,1), height = Math.max(host.clientHeight,1);
     renderer.setSize(width,height,false); camera.aspect=width/height;
-    const distance = camera.aspect < 1 ? 24/camera.aspect : 23;
-    camera.position.set(0,distance*0.78,distance*0.65); camera.lookAt(0,0,-0.6); camera.updateProjectionMatrix();
-    renderer.render(scene,camera);
+    camera.updateProjectionMatrix();
   }
   let lastTime = 0;
   const observer=new ResizeObserver(() => { resize(); render(lastTime); }); observer.observe(host); resize();
@@ -153,12 +149,8 @@ export function createArenaScene(host: HTMLElement, players: ArenaPlayer[], flig
     cup.position.set(shake*2+leave*7,0.15+entry*2.85+shake*0.5,-4.0);
     cup.rotation.set(pour*Math.PI/2,0,shake); cup.visible=leave<1;
     const elapsed=Math.max(0,time-FLIGHT_START);
-    const closeup=smooth((elapsed-flight.releases.at(-1)!-1.4)/2.2);
-    const overview=camera.aspect<1?24/camera.aspect:23;
-    const closeDistance=Math.max(8.5,(Math.max(span.x/Math.min(camera.aspect,1.7),span.z*0.8)+3.4)/0.72);
-    const distance=THREE.MathUtils.lerp(overview,closeDistance,closeup);
-    const target=new THREE.Vector3(center.x*closeup,0,THREE.MathUtils.lerp(-0.6,center.z,closeup));
-    camera.position.set(target.x,distance*0.78,target.z+distance*0.65);camera.lookAt(target);
+    const pose = flightCameraPose(bounds, camera.aspect, elapsed, flight.duration);
+    camera.position.copy(pose.position); camera.lookAt(pose.target);
     const index=Math.min(Math.floor(elapsed/flight.frameStep),flight.frames.length-1);
     const a=flight.frames[index],b=flight.frames[Math.min(index+1,flight.frames.length-1)];
     const alpha=Math.min(elapsed/flight.frameStep-index,1);
@@ -180,5 +172,19 @@ export function createArenaScene(host: HTMLElement, players: ArenaPlayer[], flig
     textures.forEach(texture=>texture.dispose()); geometries.forEach(geometry=>geometry.dispose());
     key.shadow.dispose(); environment.dispose(); renderer.dispose(); renderer.domElement.remove();
   }
-  return {render,dispose,canvas:renderer.domElement};
+  function setQuality(value: Quality) {
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, {low:1,medium:1.5,high:2}[value]));
+    const shadowChanged = renderer.shadowMap.enabled !== (value !== "low");
+    renderer.shadowMap.enabled = value !== "low";
+    if (shadowChanged) scene.traverse(object => {
+      if (object instanceof THREE.Mesh) for (const material of Array.isArray(object.material) ? object.material : [object.material]) material.needsUpdate = true;
+    });
+    const size = value === "high" ? 2048 : 1024;
+    if (key.shadow.mapSize.x !== size) {
+      key.shadow.map?.dispose(); key.shadow.map = null;
+      key.shadow.mapSize.setScalar(size); key.shadow.needsUpdate = true;
+    }
+    resize(); render(lastTime);
+  }
+  return {render,dispose,setQuality,canvas:renderer.domElement};
 }

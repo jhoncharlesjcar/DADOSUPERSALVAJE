@@ -4,7 +4,7 @@
 
 ## Referencia y alcance
 
-La ilustración original está en `public/mascots/pantera.webp`. Esta versión busca acercar la silueta, el traje y los rasgos felinos; **no es una reconstrucción fiel ni un acabado fotorrealista aprobado**.
+La ilustración original está en `public/mascots/pantera.webp`. Esta versión busca acercar la silueta, el traje y los rasgos felinos; **no es una reconstrucción fiel ni un acabado fotorrealista aprobado**. El usuario aceptó la revisión 2 como base y autorizó continuar con Pato Salvaje siguiendo el orden de la galería.
 
 - Cabeza esculpida y unificada, puente nasal, orejas felinas, párpados, pupilas y bigotes.
 - Rosetas irregulares en el pelaje y fibras cortas de geometría en la cabeza.

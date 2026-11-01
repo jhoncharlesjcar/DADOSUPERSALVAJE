@@ -2,26 +2,29 @@ import { NextResponse } from "next/server";
 import { joinQueue, leaveQueue } from "@/lib/matchmaking";
 import { isOnlineModeEnabled } from "@/lib/onlineMode";
 import { requirePlayer } from "@/lib/playerAuth";
+import { routeError } from "@/lib/data/http";
 
 export async function POST(request: Request) {
   if (!isOnlineModeEnabled()) return NextResponse.json({ error: "Modo online temporalmente no disponible" }, { status: 503 });
   try {
     const dni = await requirePlayer();
     const body = await request.json();
-    const matchedSala = joinQueue(dni, String(body.modo || ""), Number(body.monto));
+    const matchedSala = await joinQueue(dni, String(body.modo || ""), body.monto, {
+      groupId: typeof body.groupId === "string" ? body.groupId : undefined,
+      dadoId: typeof body.dadoId === "string" ? body.dadoId : undefined,
+    });
     return NextResponse.json({ success: true, matchedSala });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Error interno";
-    return NextResponse.json({ error: message }, { status: message === "No autorizado" ? 401 : 400 });
+    return routeError(error);
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE() {
   if (!isOnlineModeEnabled()) return new NextResponse(null, { status: 204 });
   try {
-    leaveQueue(await requirePlayer());
+    await leaveQueue(await requirePlayer());
     return new NextResponse(null, { status: 204 });
-  } catch {
-    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  } catch (error) {
+    return routeError(error);
   }
 }

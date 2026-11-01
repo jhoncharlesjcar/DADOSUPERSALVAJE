@@ -1,0 +1,9 @@
+{
+  "name": "poseidon",
+  "source": "assets\\mascots3d\\poseidon\\revision3\\poseidon.glb",
+  "trianglesBefore": 201660,
+  "trianglesAfter": 60554,
+  "sourceBytes": 9425452,
+  "liteBytes": 4132688,
+  "textureMaxSize": 1024
+}

@@ -1,0 +1,9 @@
+{
+  "name": "pantera",
+  "source": "public\\models\\mascots\\pantera.glb",
+  "trianglesBefore": 127308,
+  "trianglesAfter": 38248,
+  "sourceBytes": 6063780,
+  "liteBytes": 2632332,
+  "textureMaxSize": 1024
+}

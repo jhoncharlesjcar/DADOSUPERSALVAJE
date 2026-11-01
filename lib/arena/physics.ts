@@ -1,6 +1,7 @@
 import { Body, Box, ContactMaterial, Material, Plane, Vec3, World } from "cannon-es";
 import { Quaternion, Vector3 } from "three";
 import type { ArenaRound } from "./types";
+import takes from "./takes.json";
 
 export const DIE_SIZE = 0.86;
 export const STEP = 1 / 60;
@@ -28,11 +29,19 @@ export function seededRandom(seed: string) {
  * The outcome is already authoritative. No settling correction or random local result.
  * Choreographed cup motion precedes this simulation; its interior is not simulated.
  */
-export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Flight {
+export function simulateFlight(round: ArenaRound, seed: string): Flight {
+  const choices = (takes as Record<string, string[]>)[round.rolls.length];
+  if (!choices?.length) throw new Error("El lanzamiento requiere entre 2 y 10 dados");
+  // Accepted physical takes are calibrated offline. Runtime does one simulation,
+  // never a search; the seed selects presentation only, not the authoritative faces.
+  return simulateTake(round, choices[Math.floor(seededRandom(seed)() * choices.length)]);
+}
+
+function simulateTake(round: ArenaRound, seed: string): Flight {
   const random = seededRandom(seed);
   const world = new World({ gravity: new Vec3(0, -18, 0), allowSleep: true });
   const material = new Material("dice-table");
-  world.addContactMaterial(new ContactMaterial(material, material, { friction: 0.22, restitution: 0.42 }));
+  world.addContactMaterial(new ContactMaterial(material, material, { friction: 0.06, restitution: 0.78 }));
   const floor = new Body({ mass: 0, material, shape: new Plane() });
   floor.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
   world.addBody(floor);
@@ -49,12 +58,12 @@ export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Fl
   let time = 0;
   const bodies = round.rolls.map((_, i) => {
     const body = new Body({ mass: 1, material, shape: new Box(new Vec3(DIE_SIZE / 2, DIE_SIZE / 2, DIE_SIZE / 2)),
-      linearDamping: 0.45, angularDamping: 0.06, allowSleep: true, sleepSpeedLimit: 0.22, sleepTimeLimit: 0.35 });
+      linearDamping: 0.28, angularDamping: 0.10, allowSleep: true, sleepSpeedLimit: 0.22, sleepTimeLimit: 0.35 });
     // A short fan of throws leaves the tilted cup's opening without stacking bodies.
-    const angle = (i - (round.rolls.length - 1) / 2) * 0.20;
+    const angle = (i - (round.rolls.length - 1) / 2) * 0.10;
     body.position.set(0, 3, -1.8);
     body.velocity.set(Math.sin(angle) * (4.4 + random()), 2.4 + random() * 1.4, 4 + random() * 1.5 + (i % 2) * 1.5);
-    body.angularVelocity.set(32 + random() * 22, random() * 30 - 15, random() * 36 - 18);
+    body.angularVelocity.set(60 + random() * 8, random() * 30 - 15, random() * 36 - 18);
     body.quaternion.setFromEuler(random() * 2, random() * 3, random() * 2);
     let lastImpact = -1;
     body.addEventListener("collide", (event: { body: Body; contact: { getImpactVelocityAlongNormal(): number } }) => {
@@ -67,7 +76,7 @@ export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Fl
     });
     return body;
   });
-  const releases = bodies.map((_, i) => i * 0.25);
+  const releases = bodies.map((_, i) => i * 0.10);
   const frames: Float32Array[] = [];
   const rotations = bodies.map(() => 0);
   let stayedOnTable = true;
@@ -75,7 +84,7 @@ export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Fl
   const previousRotation = new Quaternion(), currentRotation = new Quaternion();
   for (let frame = 0; frame <= 1080; frame++) {
     time = frame * STEP;
-    bodies.forEach((body, i) => { if (frame === i * 15) world.addBody(body); });
+    bodies.forEach((body, i) => { if (frame === i * 6) world.addBody(body); });
     const snapshot = new Float32Array(bodies.length * 7);
     bodies.forEach((body, i) => snapshot.set([body.position.x, body.position.y, body.position.z, body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w], i * 7));
     bodies.forEach((body, i) => {
@@ -99,10 +108,7 @@ export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Fl
     return body.sleepState === Body.SLEEPING && body.position.y < 0.5 && Math.hypot(body.position.x, body.position.z) < 7.9 &&
       Math.max(...FACE_NORMALS.map(normal => new Vector3(...normal).applyQuaternion(q).y)) > 0.995;
   });
-  if (!stable) {
-    if (attempt >= 7) throw new Error("No se pudo preparar un lanzamiento estable");
-    return simulateFlight(round, `${seed}:take`, attempt + 1);
-  }
+  if (!stable) throw new Error("No se pudo preparar un lanzamiento estable");
   const offsets = bodies.map((body, i) => {
     const q = new Quaternion(body.quaternion.x, body.quaternion.y, body.quaternion.z, body.quaternion.w);
     let face = 0, height = -Infinity;
@@ -116,7 +122,7 @@ export function simulateFlight(round: ArenaRound, seed: string, attempt = 0): Fl
   // Cinematic playback stretches the moving trajectory, not a static result hold.
   // Keep the final quiet settling interval short instead of stretching it too.
   // Release, collision audio and camera all use the same presentation clock.
-  const duration = 12;
+  const duration = 14.5;
   const physicalDuration = (frames.length - 1) * STEP;
   const tail = 0.6;
   const movingDuration = Math.min(lastMovingTime, physicalDuration - STEP);

@@ -11,10 +11,11 @@ import GameResults from "./GameResults";
 import RankingPanel from "./RankingPanel";
 import DiceRoller from "./DiceRoller";
 import { DicePhase, Player, GameResult, GameStats, Toast, LevelUp } from "@/types";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { formatSoles } from "@/lib/currency";
 
 export default function PanelPrincipal() {
+  const reduceMotion = useReducedMotion();
   const [jugadores, setJugadores] = useState<Player[]>([]);
   const [monto, setMonto] = useState<number>(10);
   const [modoJuego, setModoJuego] = useState<string>("versus");
@@ -54,18 +55,22 @@ export default function PanelPrincipal() {
 
   // Start ambient particles
   useEffect(() => {
+    if (reduceMotion) return;
+    let cancelled = false;
     import("@/lib/particleSystem").then(mod => {
+      if (cancelled) return;
       particlesRef.current = mod;
       if (appRef.current) {
         mod.startAmbientParticles(appRef.current);
       }
     });
     return () => {
+      cancelled = true;
       if (particlesRef.current) {
         particlesRef.current.stopAmbientParticles();
       }
     };
-  }, []);
+  }, [reduceMotion]);
 
   // Load history + ranking + stats on mount
   useEffect(() => {
@@ -286,9 +291,9 @@ export default function PanelPrincipal() {
         {/* ===== LEFT PANEL ===== */}
         <motion.div 
           className="search-section"
-          initial={{ opacity: 0, x: -50 }}
+          initial={reduceMotion ? false : { opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.6, ease: "easeOut" }}
         >
           <PlayerSearch
             onPlayerAdd={handlePlayerAdd}
@@ -308,9 +313,9 @@ export default function PanelPrincipal() {
         {/* ===== CENTER PANEL — Game ===== */}
         <motion.div 
           className="right-panel"
-          initial={{ opacity: 0, y: 50 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.2, ease: "easeOut" }}
         >
           <GameRoom
             jugadores={jugadores}
@@ -351,9 +356,10 @@ export default function PanelPrincipal() {
 
         {/* ===== RIGHT PANEL — Ranking ===== */}
         <motion.div
-          initial={{ opacity: 0, x: 50 }}
+          className="ranking-section"
+          initial={reduceMotion ? false : { opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.6, delay: 0.4, ease: "easeOut" }}
         >
           <RankingPanel ranking={ranking} />
         </motion.div>

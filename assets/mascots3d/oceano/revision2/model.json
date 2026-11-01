@@ -1,0 +1,19 @@
+{
+  "name": "Titán del Océano",
+  "revision": 2,
+  "reference": "/mascots/oceano.webp",
+  "vertices": 81206,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
+}

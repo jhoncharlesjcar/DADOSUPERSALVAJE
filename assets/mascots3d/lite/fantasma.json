@@ -1,0 +1,9 @@
+{
+  "name": "fantasma",
+  "source": "public\\models\\mascots\\fantasma.glb",
+  "trianglesBefore": 78010,
+  "trianglesAfter": 23459,
+  "sourceBytes": 4307256,
+  "liteBytes": 1880188,
+  "textureMaxSize": 1024
+}

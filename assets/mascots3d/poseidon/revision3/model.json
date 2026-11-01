@@ -1,0 +1,19 @@
+{
+  "name": "Poseidón",
+  "revision": 3,
+  "reference": "/mascots/poseidon.webp",
+  "vertices": 101754,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ],
+  "textures": [
+    "baseColor 2048",
+    "normal 2048"
+  ],
+  "status": "individual reference study for review"
+}

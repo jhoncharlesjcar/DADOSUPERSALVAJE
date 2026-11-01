@@ -1,14 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { validarDNI } from "../lib/db";
 
-// Mocking getDB to avoid real file interaction for basic logic tests
-vi.mock("../lib/db", async () => {
-  const actual = await vi.importActual("../lib/db") as any;
-  return {
-    ...actual,
-    getDB: vi.fn(), 
-  };
-});
+vi.mock("server-only", () => ({}));
 
 describe("Logic: Base de Datos y Validaciones", () => {
 

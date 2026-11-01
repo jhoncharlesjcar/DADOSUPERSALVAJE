@@ -1,0 +1,9 @@
+{
+  "name": "bestia_fuego",
+  "source": "public\\models\\mascots\\bestia_fuego.glb",
+  "trianglesBefore": 150777,
+  "trianglesAfter": 45289,
+  "sourceBytes": 8128156,
+  "liteBytes": 3588380,
+  "textureMaxSize": 1024
+}

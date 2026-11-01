@@ -2,7 +2,7 @@
   "name": "Pato Salvaje",
   "revision": 2,
   "reference": "/mascots/pato.webp",
-  "vertices": 55744,
+  "vertices": 65320,
   "bones": 18,
   "clips": [
     "Idle",

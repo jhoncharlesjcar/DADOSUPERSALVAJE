@@ -1,57 +1,26 @@
-import { Validators, registrarJugadorSeguro, getDB } from "@/lib/db";
+import { Validators, registrarJugadorEnTransaccion } from "@/lib/db";
+import { getDatabase } from "@/lib/data/database";
+import { adjustDemoBalance } from "@/lib/data/ledger";
+import { solesToCents } from "@/lib/data/money";
+import { getWallet, walletIsDemo } from "@/lib/wallet";
 import { requireAdmin } from "@/lib/adminAuth";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
+  try { await requireAdmin(); } catch { return NextResponse.json({error:"No autorizado"},{status:401}); }
   try {
-    await requireAdmin();
-    const body = await request.json();
-    const dni = String(body.dni || "").trim();
-    const nombres = String(body.nombres || "").trim();
-    const celular = String(body.celular || "").trim();
-    const codigoYapeo = String(body.codigo_yapeo || "").trim();
-    const monto = Number(body.monto_yapeo || 0);
-
-    if (!Validators.dni(dni)) {
-      return NextResponse.json({ error: "DNI debe tener 8 dígitos numéricos" }, { status: 400 });
-    }
-    if (nombres.length < 2 || nombres.length > 100 || celular.length > 30 || codigoYapeo.length > 100) {
-      return NextResponse.json({ error: "Datos de jugador inválidos" }, { status: 400 });
-    }
-
-    const tieneDeposito = codigoYapeo.length > 0;
-    if (tieneDeposito && (!Number.isFinite(monto) || monto <= 0 || monto > 10000 || !Number.isInteger(monto * 100))) {
-      return NextResponse.json({ error: "Monto en soles inválido" }, { status: 400 });
-    }
-
-    const db = getDB();
-    const wallet = db.transaction(() => {
-      registrarJugadorSeguro(dni, nombres, celular, codigoYapeo);
-
-      if (tieneDeposito) {
-        const referencia = `creditos:${codigoYapeo}`;
-        const transaction = db.prepare(`
-          INSERT OR IGNORE INTO transacciones (dni, operacion, tipo, monto, referencia)
-          VALUES (?, ?, 'ingreso', ?, ?)
-        `).run(dni, `Asignación virtual ${codigoYapeo}`, monto, referencia);
-
-        if (transaction.changes === 1) {
-          db.prepare("UPDATE wallet SET saldo_real = ? WHERE dni = ?").run(monto, dni);
-          db.prepare("UPDATE jugadores SET monto_yapeo = ? WHERE dni = ?").run(monto, dni);
-        } else {
-          // La referencia ya existía: de todas formas reemplazamos el saldo
-          db.prepare("UPDATE wallet SET saldo_real = ? WHERE dni = ?").run(monto, dni);
-          db.prepare("UPDATE jugadores SET monto_yapeo = ? WHERE dni = ?").run(monto, dni);
-        }
-      }
-
-      return db.prepare("SELECT saldo_real FROM wallet WHERE dni = ?").get(dni) as { saldo_real: number };
-    })();
-
-    return NextResponse.json({ ok: true, saldo_real: wallet.saldo_real });
-  } catch (error) {
-    console.error("Error al registrar jugador:", error);
-    const status = error instanceof Error && error.message === "No autorizado" ? 401 : 500;
-    return NextResponse.json({ error: status === 401 ? "No autorizado" : "Error al registrar jugador" }, { status });
-  }
+    const body=await request.json();
+    const dni=String(body.dni || "").trim(),nombres=String(body.nombres || "").trim(),celular=String(body.celular || "").trim(),codigo=String(body.codigo_yapeo || "").trim();
+    if(!Validators.dni(dni) || nombres.length<2 || nombres.length>100 || celular.length>30 || codigo.length>100) return NextResponse.json({error:"Datos de jugador inválidos"},{status:400});
+    // The legacy operator form assigns demo credits only. A receipt is never evidence of a real payment.
+    if(codigo && !walletIsDemo()) return NextResponse.json({error:"Las recargas reales requieren confirmación de la pasarela"},{status:403});
+    const amount=codigo ? solesToCents(body.monto_yapeo) : 0n;
+    if(codigo && amount<=0n) return NextResponse.json({error:"Monto inválido"},{status:400});
+    await getDatabase().transaction(async client=>{
+      const userId=await registrarJugadorEnTransaccion(client,dni,nombres,celular);
+      if(amount>0n) await adjustDemoBalance(client,userId,amount,`creditos-demo:${codigo}`,"Asignación virtual del operador","admin");
+    });
+    const wallet=await getWallet(dni);
+    return NextResponse.json({ok:true,saldo_real:wallet?.saldo_real ?? 0,disponible_centimos:wallet?.disponible_centimos ?? "0",demo:walletIsDemo()});
+  } catch { return NextResponse.json({error:"No se pudo registrar el jugador o la referencia ya se utilizó con otros datos"},{status:400}); }
 }

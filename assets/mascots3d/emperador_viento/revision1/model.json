@@ -1,0 +1,13 @@
+{
+  "name": "Emperador del Viento",
+  "reference": "/mascots/emperador_viento.webp",
+  "vertices": 12866,
+  "bones": 18,
+  "clips": [
+    "Idle",
+    "Celebrate",
+    "Throw",
+    "Hit",
+    "Knockout"
+  ]
+}

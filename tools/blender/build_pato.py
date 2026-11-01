@@ -83,9 +83,18 @@ m.ball('Poitrine',(0,.02,2.38),(.53,.31,.48),feathers,'chest')
 m.ball('Ventre',(0,.02,1.99),(.41,.29,.37),feathers,'spine')
 m.ball('Bassin',(0,.07,1.65),(.43,.30,.28),feathers,'hips')
 m.tube('Cou emplumé',[(0,.04,2.72),(0,.035,3.12)],[.19,.20],feathers,'neck',24)
+for row in range(6):
+    for k in range(11):
+        a=(k/10-.5)*math.pi;z=2.83+row*.048
+        x=.19*math.sin(a);y=-.17*math.cos(a)
+        m.feather('Plumón cuello',(x,y,z),(x*1.1,y-.015,z-.10),.024,cream if k%4==0 else feathers,'neck')
 for s in [-1,1]:
     side='L' if s==1 else 'R';ua='upper_arm.'+side;fa='forearm.'+side;hand='hand.'+side;th='thigh.'+side;sh='shin.'+side;foot='foot.'+side
     m.ball('Aile supérieure',(s*.78,.01,2.41),(.23,.24,.35),feathers,ua)
+    for row in range(5):
+        for k in range(6):
+            x=s*.78+(k-2.5)*.065;z=2.57-row*.075;y=-.20-.03*math.sin(k*math.pi/5)
+            m.feather('Plume aile',(x,y,z),(x+s*.045,y-.015,z-.16),.042,cream if (row+k)%4==0 else feathers,ua)
     end=Vector((1.06,-.40,1.98) if s==1 else (-1.12,-.04,1.70))
     m.tube('Avant-bras',[(s*.96,0,2.16),end],[.17,.14],feathers,fa,20)
     m.tube('Bracelet ouvragé',[(s*.98,-.015,2.13),end],[.21,.17],bronze,fa,24)
@@ -182,12 +191,17 @@ for s in [-1,1]:
             x=s*(.12+k*.04);z=3.52-row*.10;y=-.22+.02*k
             m.feather('Pluma de mejilla',(x,y,z),(x+s*(.12+row*.008),y+.04,z-.12),.045,cream if (row+k)%3==0 else feathers,'head')
     m.ball('Órbita profunda',(s*.16,-.254,3.36),(.145,.055,.10),dark)
-    m.ball('Ojo de ámbar',(s*.16,-.293,3.35),(.102,.028,.064),eye)
-    m.ball('Pupila',(s*.16,-.319,3.35),(.019,.007,.045),dark)
+    m.ball('Ojo de ámbar',(s*.16,-.293,3.35),(.093,.028,.039),eye)
+    m.ball('Pupila',(s*.16,-.319,3.35),(.015,.007,.032),dark)
     m.tube('Ceja severa',[(s*.035,-.293,3.37),(s*.12,-.304,3.44),(s*.24,-.23,3.48),(s*.31,-.13,3.47)],[.045,.060,.045,.005],cream,'head',16)
-    for k in range(7):
-        x=s*(.055+k*.035)
-        m.feather('Pluma de frente',(x,-.24,3.42),(x+s*.015,-.15,3.68),.022,cream,'head')
+    for row in range(4):
+        for k in range(7):
+            x=s*(.035+k*.036);z=3.43+row*.047;y=-.245+.018*row+.04*k/6
+            m.feather('Pluma de frente',(x,y,z),(x+s*.06,y+.015,z+.09+random.uniform(-.02,.02)),.025,cream if (row+k)%3 else feathers,'head')
+    for row in range(5):
+        for k in range(6):
+            x=s*(.05+k*.043);z=3.30-row*.045;y=-.265+.07*k/5
+            m.feather('Plumón facial',(x,y,z),(x+s*.055,y+.012,z-.075),.024,cream if (row+k)%4==0 else feathers,'head')
 
 def bill(name,lower=False):
     vs=[];fs=[];rows=15;cols=25
@@ -212,7 +226,7 @@ for z,rad in [(3.61,.32),(3.67,.325),(3.75,.34)]:
     m.line('Anillo corona',[(rad*math.cos(a*math.tau/64),.235*math.sin(a*math.tau/64),z) for a in range(65)],.018,edge,'head',8)
 for k in range(10):
     a=k*math.tau/10;center=Vector((.335*math.sin(a),-.24*math.cos(a),3.70));tangent=Vector((math.cos(a),math.sin(a),0));normal=Vector((math.sin(a),-math.cos(a),0))
-    height=.48 if k%2==0 else .32
+    height=.34 if k%2==0 else .23
     outline=[center-tangent*.11+Vector((0,0,-.06)),center+tangent*.11+Vector((0,0,-.06)),center+tangent*.08+Vector((0,0,.08)),center+tangent*.045+Vector((0,0,height-.10)),center+Vector((0,0,height)),center-tangent*.045+Vector((0,0,height-.10)),center-tangent*.08+Vector((0,0,.08))]
     m.panel('Punta calada corona',[tuple(p) for p in outline],gold,'head',False,.018)
     m.line('Borde corona',outline+[outline[0]],.009,edge,'head')

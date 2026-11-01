@@ -1,0 +1,352 @@
+[
+  {
+    "name": "bestia_fuego.glb",
+    "full": {
+      "bytes": 8128156,
+      "sha256": "ecb7763bc22a9be6015906ee1263cb3a870a7da509191524614169d41596b4a7",
+      "triangles": 150697,
+      "vertices": 123350,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 3588380,
+      "sha256": "171c568691daa6363746df2f763ba4db927e9218703b8ff6ab9031978ca6de8e",
+      "triangles": 45209,
+      "vertices": 57035,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 55.9,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "demonio.glb",
+    "full": {
+      "bytes": 3494348,
+      "sha256": "9b30c613cfd8bb4a5b3aa7d7d10bbfe9262a8fe2ec4a69baff59a707d574d863",
+      "triangles": 37420,
+      "vertices": 28433,
+      "primitives": 20,
+      "materials": 14,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 1391916,
+      "sha256": "b45d260e8ced027b12f12758189c8eeb20dca151265131688ee30201df935374",
+      "triangles": 11213,
+      "vertices": 13277,
+      "primitives": 20,
+      "materials": 14,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 60.2,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "emperador_viento.glb",
+    "full": {
+      "bytes": 7234840,
+      "sha256": "a38494c21655f026aa47ed1d019261cf0d8f16654009b0d8644ed77bc54060c1",
+      "triangles": 129474,
+      "vertices": 114000,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 3059312,
+      "sha256": "23a306b9d81d96556597f7b6d6e210337ef568c3d20cb660eecd27453e43797b",
+      "triangles": 38842,
+      "vertices": 49301,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 57.7,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "fantasma.glb",
+    "full": {
+      "bytes": 4307256,
+      "sha256": "db5f1a1914f6306db3f35be45e19069b7710af0d047ad978101b7598b7375cfa",
+      "triangles": 77930,
+      "vertices": 62049,
+      "primitives": 10,
+      "materials": 10,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 1880188,
+      "sha256": "423e0351df706649e18eb8000213e22df4b59b5819e4bdd952493e62d87ee8fe",
+      "triangles": 23379,
+      "vertices": 28184,
+      "primitives": 10,
+      "materials": 10,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.3,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "oceano.glb",
+    "full": {
+      "bytes": 7899576,
+      "sha256": "107c06545e4d34ddce472e88530b2b750cb70a634e66ea5ca246c8f673d9c71d",
+      "triangles": 160736,
+      "vertices": 117048,
+      "primitives": 14,
+      "materials": 14,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 3444332,
+      "sha256": "3d40c00f7c26e5fc31b011c5e4352529909572c49564a95ab3e5ae7edd9bee47",
+      "triangles": 48219,
+      "vertices": 54729,
+      "primitives": 14,
+      "materials": 14,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.4,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "pantera.glb",
+    "full": {
+      "bytes": 6063780,
+      "sha256": "367f235e99803418529fc631a3158d1038e1bb9eee2533279166bcce08ac74ac",
+      "triangles": 127228,
+      "vertices": 89600,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 2632332,
+      "sha256": "0c430aa1cf5ff28c50368d5a57eb904664018ce1034916a8d7c7bf40d3daf978",
+      "triangles": 38168,
+      "vertices": 42063,
+      "primitives": 15,
+      "materials": 15,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.6,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "pato.glb",
+    "full": {
+      "bytes": 6958448,
+      "sha256": "7f8ae34b9181120e46b0ef1f8372ee006f48ff3bbc3adee36c2d45091f42be07",
+      "triangles": 118352,
+      "vertices": 105077,
+      "primitives": 14,
+      "materials": 14,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 3040196,
+      "sha256": "9f5e7d8610c2b0c530daca90cdbe55fe11cf079c93ef16b09ef099625bdb6731",
+      "triangles": 35505,
+      "vertices": 48376,
+      "primitives": 14,
+      "materials": 14,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.3,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "poseidon.glb",
+    "full": {
+      "bytes": 9425452,
+      "sha256": "d81a07a762201a88aedc7f492b3dd7ff590d0d38ced434b5f2af6bde481bf55e",
+      "triangles": 201580,
+      "vertices": 147404,
+      "primitives": 13,
+      "materials": 13,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 4132688,
+      "sha256": "072d998d3d4d63b6bc4c5e77ccd408baa89ccd032834d3554c5f4dc40ab27ca7",
+      "triangles": 60474,
+      "vertices": 67565,
+      "primitives": 13,
+      "materials": 13,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.2,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "rey_salvaje.glb",
+    "full": {
+      "bytes": 8197432,
+      "sha256": "eb9b786d110027d4393c52bc3246dd556088acb896cdee3955ad7fd87f62874c",
+      "triangles": 159895,
+      "vertices": 125994,
+      "primitives": 16,
+      "materials": 16,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 3657708,
+      "sha256": "86d815fb6c1ebb7e6fb29510906489504e4bc417f534c9cae8d47624d9990807",
+      "triangles": 47968,
+      "vertices": 59004,
+      "primitives": 16,
+      "materials": 16,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 55.4,
+    "triangleReductionPercent": 70
+  },
+  {
+    "name": "sombra.glb",
+    "full": {
+      "bytes": 5298004,
+      "sha256": "f6174262404e52d4859327d691ea91df0185451306d23ecea048314fd161fed4",
+      "triangles": 98222,
+      "vertices": 80591,
+      "primitives": 10,
+      "materials": 10,
+      "clips": {
+        "Celebrate": 2.533333333333333,
+        "Hit": 1.2,
+        "Idle": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Throw": 2.033333333333333
+      }
+    },
+    "lite": {
+      "bytes": 2321716,
+      "sha256": "aad4b2060a24d48bea92e8d0dc36821247c5ac2a72d9106fed95ff7065ffdfbb",
+      "triangles": 29465,
+      "vertices": 36782,
+      "primitives": 10,
+      "materials": 10,
+      "clips": {
+        "Throw": 2.033333333333333,
+        "Knockout": 2.533333333333333,
+        "Idle": 2.033333333333333,
+        "Hit": 1.2,
+        "Celebrate": 2.533333333333333
+      }
+    },
+    "downloadReductionPercent": 56.2,
+    "triangleReductionPercent": 70
+  }
+]

@@ -1,51 +1,13 @@
-import { getDB } from "./db";
+import "server-only";
+import { getDatabase } from "./data/database";
 
-type Bucket = { count: number; resetAt: number };
-const memoryFallback = new Map<string, Bucket>();
-
-export function checkRateLimit(key: string, limit: number, windowMs: number): { allowed: boolean; retryAfter: number } {
+export async function checkRateLimit(key: string,limit: number,windowMs: number): Promise<{allowed:boolean;retryAfter:number}> {
+  if(!key || key.length>300 || !Number.isSafeInteger(limit) || limit<1 || limit>1000000 || !Number.isSafeInteger(windowMs) || windowMs<1) throw new Error("Límite inválido");
   const now = Date.now();
-  try {
-    const db = getDB();
-    
-    // Clean expired rate limit records periodically
-    db.prepare("DELETE FROM rate_limit WHERE reset_at < ?").run(now);
-
-    const row = db.prepare(
-      "SELECT count, reset_at FROM rate_limit WHERE key = ? AND reset_at > ?"
-    ).get(key, now) as { count: number; reset_at: number } | undefined;
-
-    if (!row) {
-      db.prepare("INSERT OR REPLACE INTO rate_limit (key, count, reset_at) VALUES (?, 1, ?)").run(key, now + windowMs);
-      return { allowed: true, retryAfter: 0 };
-    }
-
-    if (row.count >= limit) {
-      return { allowed: false, retryAfter: Math.max(1, Math.ceil((row.reset_at - now) / 1000)) };
-    }
-
-    db.prepare("UPDATE rate_limit SET count = count + 1 WHERE key = ?").run(key);
-    return { allowed: true, retryAfter: 0 };
-  } catch {
-    // Graceful in-memory fallback
-    const current = memoryFallback.get(key);
-    if (!current || current.resetAt <= now) {
-      memoryFallback.set(key, { count: 1, resetAt: now + windowMs });
-      return { allowed: true, retryAfter: 0 };
-    }
-    if (current.count >= limit) {
-      return { allowed: false, retryAfter: Math.max(1, Math.ceil((current.resetAt - now) / 1000)) };
-    }
-    current.count += 1;
-    return { allowed: true, retryAfter: 0 };
-  }
+  const result = await getDatabase().query<{count:number;reset_at:string}>(`INSERT INTO rate_limit(key,count,reset_at) VALUES($1,1,$2)
+    ON CONFLICT(key) DO UPDATE SET count=CASE WHEN rate_limit.reset_at<=$3 THEN 1 ELSE LEAST(rate_limit.count+1,$4) END,
+    reset_at=CASE WHEN rate_limit.reset_at<=$3 THEN $2 ELSE rate_limit.reset_at END RETURNING count,reset_at::text`,[key,now+windowMs,now,limit+1]);
+  const row = result.rows[0];
+  return {allowed:row.count<=limit,retryAfter:row.count<=limit ? 0 : Math.max(1,Math.ceil((Number(row.reset_at)-now)/1000))};
 }
-
-export function clearRateLimit(key: string): void {
-  try {
-    const db = getDB();
-    db.prepare("DELETE FROM rate_limit WHERE key = ?").run(key);
-  } catch {}
-  memoryFallback.delete(key);
-}
-
+export async function clearRateLimit(key: string) { await getDatabase().query("DELETE FROM rate_limit WHERE key=$1",[key]); }

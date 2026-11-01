@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { use, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ArenaReplay from "@/app/_components/ArenaReplay";
@@ -10,7 +10,7 @@ import MascotCelebration from "@/app/_components/MascotCelebration";
 
 type RoomData = {
   replay: ArenaMatch | null;
-  room: { id: number; mode: "duelo" | "batalla"; stake: number; status: string; players: Array<{ name: string; isMe: boolean }> };
+  room: { id: string; mode: string; stake: number; status: string; players: Array<{ name: string; isMe: boolean; confirmed: boolean }> };
   result: null | {
     winner: { seat: number; name: string; value: number; isMe: boolean };
     rolls: Array<{ seat: number; name: string; value: number; isMe: boolean }>;
@@ -23,13 +23,13 @@ type RoomData = {
 export default function OnlineGameRoom({ params }: { params: Promise<{ salaId: string }> }) {
   const { salaId } = use(params);
   const router = useRouter();
+  const reduceMotion = useReducedMotion();
   const [data, setData] = useState<RoomData | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [revealed, setRevealed] = useState(false);
 
   const loadRoom = useCallback(async () => {
-    setLoading(true);
     setError("");
     try {
       const response = await fetch(`/api/game/room?id=${encodeURIComponent(salaId)}`, { cache: "no-store" });
@@ -52,12 +52,27 @@ export default function OnlineGameRoom({ params }: { params: Promise<{ salaId: s
     return () => clearTimeout(timer);
   }, [loadRoom]);
 
+  useEffect(() => {
+    if (!data || data.result || ["anulada", "en_disputa"].includes(data.room.status)) return;
+    const timer = setInterval(() => { void loadRoom(); }, 2000);
+    return () => clearInterval(timer);
+  }, [data, loadRoom]);
+
+  async function confirmEntry() {
+    try {
+      const response = await fetch("/api/game/room", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:salaId,action:"confirm"})});
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "No se pudo confirmar");
+      await loadRoom();
+    } catch (e) { setError(e instanceof Error ? e.message : "No se pudo confirmar"); }
+  }
+
   async function returnToLobby() {
     if (data?.result) {
       await fetch(`/api/game/room?id=${encodeURIComponent(salaId)}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: Number(salaId) }),
+        body: JSON.stringify({ id: salaId, action: "view" }),
       }).catch(() => null);
     }
     router.push("/lobby");
@@ -81,7 +96,8 @@ export default function OnlineGameRoom({ params }: { params: Promise<{ salaId: s
     return (
       <main className="game-stage"><section className="game-result-card">
         <span className="game-result-icon" aria-hidden="true">⌛</span><p className="game-eyebrow">SALA #{data.room.id}</p>
-        <h1>Esperando el resultado</h1><p>La resolución se realiza en el servidor. Puedes actualizar sin perder tu partida.</p>
+        <h1>{data.room.status === "confirmando" ? "Confirma tu entrada" : data.room.status === "anulada" ? "Partida anulada" : data.room.status === "en_disputa" ? "Partida en revisión" : "Esperando el resultado"}</h1><p>La apuesta se bloquea cuando todos confirman. Entrada: {formatSoles(data.room.stake)}.</p>
+        {data.room.status === "confirmando" && !data.room.players.find(p=>p.isMe)?.confirmed && <button className="btn btn-primary" onClick={()=>void confirmEntry()}>CONFIRMAR ENTRADA</button>}
         <div className="game-actions"><button className="btn btn-primary" onClick={() => void loadRoom()}>ACTUALIZAR</button><button className="btn btn-secondary" onClick={() => router.push("/lobby")}>VOLVER</button></div>
       </section></main>
     );
@@ -96,7 +112,7 @@ export default function OnlineGameRoom({ params }: { params: Promise<{ salaId: s
       <header className="game-header"><p className="game-eyebrow">SALA #{room.id} · {room.mode.toUpperCase()}</p><h1>DADO SALVAJE</h1><p>{room.players.length} jugadores · entrada {formatSoles(room.stake)}</p></header>
       {data.replay && <div style={{width:"100%",maxWidth:1100}}><ArenaReplay key={data.replay.id} match={data.replay} onComplete={()=>setRevealed(true)}/></div>}
       {(revealed || !data.replay) && (
-        <motion.section className={`game-result-card ${result.winner.isMe ? "is-winner" : "is-defeat"}`} initial={{ opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.5 }}>
+        <motion.section className={`game-result-card ${result.winner.isMe ? "is-winner" : "is-defeat"}`} initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: reduceMotion ? 0 : 0.5 }}>
           <span className="game-result-icon" aria-hidden="true">{result.winner.isMe ? "🏆" : "◆"}</span>
           <p className="game-eyebrow">RESULTADO FINAL</p><h2>{result.winner.isMe ? "¡Victoria salvaje!" : `${result.winner.name} gana la ronda`}</h2>
           {winnerMascot && <MascotCelebration key={`${data.replay?.id}-${winnerMascot}`} dadoId={winnerMascot} />}

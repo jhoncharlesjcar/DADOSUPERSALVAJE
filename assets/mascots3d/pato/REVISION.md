@@ -23,10 +23,18 @@ Los cinco clips usan el esqueleto anterior, adaptado a las proporciones nuevas. 
 node tools/check-mascot.mjs --file assets/mascots3d/pato/revision2/pato.glb
 ```
 
-El generador escribe únicamente en `revision2/`. La integración en `public/models/mascots/pato.glb` es un paso separado tras revisar los renders y validar los clips. `revision1/` conserva la versión anterior. El generador general `build_roster.py` preserva cualquier mascota cuyo `model.json` indique revisión 2 o superior.
+El generador escribe únicamente en `revision2/`. La candidata final fue revisada y copiada a `public/models/mascots/pato.glb`; su fuente, metadatos y render principal también se copiaron a la carpeta de Pato. `revision1/` conserva la versión anterior. El generador general `build_roster.py` preserva cualquier mascota cuyo `model.json` indique revisión 2 o superior.
+
+La exportación final tiene 65 320 vértices fuente, 18 huesos, cinco clips, dos texturas compartidas y un tamaño de aproximadamente 6,64 MiB. El catálogo usa `pato.glb?v=2` para renovar la caché. Su peso y rendimiento siguen pendientes de medición en teléfonos físicos.
 
 La revisión se puede comparar con la ilustración desde `/mascotas`, seleccionando **Pato Salvaje → Comparar con imagen**.
 
 ## Estado de validación
 
-Pendiente de terminar la exportación y revisar los renders de esta ejecución.
+- Blender terminó la generación, el horneado y los tres renders (`preview.png`, `detail.png`, `celebrate.png`). Se inspeccionaron visualmente reposo, rostro y celebración. En la segunda pasada se redujo la corona, se estrecharon los ojos y se añadieron plumas al cuello y brazos.
+- `tools/check-mascot.mjs --file assets/mascots3d/pato/revision2/pato.glb`: cinco clips presentes, poses finitas y contacto con el suelo en cinco instantes de cada clip. Este comprobador no decodifica texturas.
+- Cinco pruebas aprobadas en `tests/mascots.test.ts` y `tests/mascot-celebration.test.tsx`. Vitest requirió ejecutarse fuera del entorno restringido por un error EPERM al renombrar temporales.
+- Comprobación de tipos (`tsc --noEmit`) y ESLint del catálogo correctos. No se repitió la compilación de producción: esta revisión modifica el modelo, su generador y los datos del catálogo, sin cambios de componentes o rutas.
+- La comprobación visual de esta revisión se hizo mediante renders locales de Blender. No se verificó el nuevo acabado en el navegador: permanece la restricción de URL detectada durante la revisión anterior y no se intentó eludirla.
+
+La revisión artística del usuario queda pendiente. Todavía hay diferencias visibles en el rostro, la distribución del plumaje y la forma de la corona respecto a la ilustración. Las hombreras y articulaciones conservan rigidez en ciertas poses.
