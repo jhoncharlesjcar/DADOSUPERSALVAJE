@@ -2,6 +2,7 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
+import { DEVELOPER_COOKIE_NAME, getDeveloperIdentity, usesSupabaseAdminAuth } from "./supabaseAdminAuth";
 
 export const ADMIN_COOKIE_NAME = "dado_admin_session";
 const SESSION_TTL_SECONDS = 60 * 60 * 8;
@@ -46,9 +47,17 @@ export function verifyAdminPassword(password: string): boolean {
   return expected.length === received.length && timingSafeEqual(expected, received);
 }
 
-export async function isAdminAuthenticated(): Promise<boolean> {
+export async function getAdminIdentity() {
   const cookieStore = await cookies();
-  return verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value);
+  if (usesSupabaseAdminAuth()) {
+    return getDeveloperIdentity(cookieStore.get(DEVELOPER_COOKIE_NAME)?.value);
+  }
+  return verifyAdminSessionToken(cookieStore.get(ADMIN_COOKIE_NAME)?.value)
+    ? { id: "legacy", name: "Operador", email: "", role: "operator" as const } : null;
+}
+
+export async function isAdminAuthenticated(): Promise<boolean> {
+  return (await getAdminIdentity()) !== null;
 }
 
 export async function requireAdmin(): Promise<void> {

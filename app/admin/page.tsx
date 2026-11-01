@@ -1,13 +1,14 @@
 import { getTodosJugadores, getReporteFinanciero, getTodasTransacciones, getEstadisticasGlobales } from "@/lib/db";
 import AdminClient from "./AdminClient";
-import { isAdminAuthenticated } from "@/lib/adminAuth";
+import { getAdminIdentity } from "@/lib/adminAuth";
 import { redirect } from "next/navigation";
 import { logoutAdmin } from "./login/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  if (!(await isAdminAuthenticated())) redirect("/admin/login?next=/admin");
+  const identity = await getAdminIdentity();
+  if (!identity) redirect("/admin/login?next=/admin");
   const [jugadores, reporte, transacciones, stats] = await Promise.all([
     getTodosJugadores(), getReporteFinanciero(), getTodasTransacciones(), getEstadisticasGlobales(),
   ]);
@@ -21,6 +22,7 @@ export default async function AdminPage() {
             🛡️ PANEL DE ADMINISTRACIÓN
           </h1>
           <p style={{ color: "var(--white-muted)", marginTop: 8 }}>Gestión de jugadores, saldos en soles y estadísticas globales</p>
+          <p>{identity.name} · {identity.role === "developer" ? "Developer · Acceso completo" : "Operador"}</p>
           </div>
           <form action={logoutAdmin}><button className="btn btn-ghost" type="submit">Cerrar sesión</button></form>
         </header>
